@@ -9,5 +9,6 @@ namespace Kuhinja.Models
         [Required]
         [RegularExpression("\\w+")]
         public string Name { get; set; }
+        public List<Recipe> Recipes { get; set; }
     }
 }

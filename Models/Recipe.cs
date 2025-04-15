@@ -9,9 +9,9 @@ namespace Kuhinja.Models
         [Required]
         public string Title { get; set; }
         public string Instructions { get; set; }
-        [Url]
         public string ImageUrl { get; set; }    
-        public Category Category { get; set; }
+        public List<Category> Categories { get; set; }
+        public List<Ingredient> Ingredients { get; set; }
         public int UserId { get; set; }  // Foreign key to User (must be of type 'int')
         public User User { get; set; }    // Navigation property
         public DateTime Created_at { get; set; }

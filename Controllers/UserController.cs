@@ -1,83 +1,45 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Kuhinja.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kuhinja.Controllers
 {
-    public class UserController : Controller
+    [ApiController]
+    [Route("[controller]")]
+    public class UserController : ControllerBase
     {
-        // GET: UserController
-        public ActionResult Index()
+        public AppDbContext Context { get; set; }
+        public UserController(AppDbContext context)
         {
-            return View();
+            Context = context;
         }
 
-        // GET: UserController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: UserController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: UserController/Create
+        [Route("dodajKorisnika")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> dodajKorisnika([FromBody]User user)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-        // GET: UserController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
+            user.createdAt = DateTime.Now;
+            Context.Users.Add(user);
+            await Context.SaveChangesAsync();
+            return Ok(user.Name);
         }
-
-        // POST: UserController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        [Route("preuzmiKorisnika/{email}")]
+        [HttpGet]
+        public async Task<ActionResult> PreuzmiKorisnika(string email)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var korisnik = await Context.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
+            return Ok(korisnik);
         }
-
-        // GET: UserController/Delete/5
-        public ActionResult Delete(int id)
+        [Route("preuzmiKorisnike")]
+        [HttpGet]
+        public async Task<ActionResult> PreuzmiKorisnike()
         {
-            return View();
-        }
-
-        // POST: UserController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var korisnici = await Context.Users.ToListAsync();
+            return Ok(korisnici);
         }
     }
 }
