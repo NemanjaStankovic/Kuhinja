@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Kuhinja.Models
 {
@@ -9,6 +10,7 @@ namespace Kuhinja.Models
         [Required]
         [RegularExpression("\\w+")]
         public string Name { get; set; }
+        [JsonIgnore]
         public List<Recipe> Recipes { get; set; }
     }
 }

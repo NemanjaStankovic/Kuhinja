@@ -44,11 +44,32 @@ namespace Kuhinja.Controllers
                 ImageUrl = recipeDTO.ImageUrl,
                 User = user,
                 Ingredients = allIngredients,
-                Categories = allCategories
+                Categories = allCategories,
+                Created_at = DateTime.Now
             };
             Context.Recipes.Add(recipe);
             await Context.SaveChangesAsync();
             return Ok(recipe.Title);
+        }
+        [Route("preuzmiRecepte")]
+        [HttpGet]
+        public async Task<ActionResult> preuzmiRecepte([FromQuery] List<string> categories, [FromQuery] List<string> ingredients)
+        {
+            var query = Context.Recipes
+                .Include(r => r.Categories)
+                .Include(r => r.Ingredients)
+                .AsQueryable();
+            if (categories != null && categories.Any())
+            {
+                query = query.Where(r => r.Categories.Any(c => categories.Contains(c.Name)));
+            }
+            if (ingredients != null && ingredients.Any())
+            {
+                query = query.Where(r => r.Ingredients.Any(i => ingredients.Contains(i.Name)));
+            }
+
+            var result = await query.ToListAsync();
+            return Ok(result);
         }
     }
 }
