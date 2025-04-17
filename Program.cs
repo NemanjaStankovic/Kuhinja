@@ -20,6 +20,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseDefaultFiles(); // Looks for index.html
+
+app.UseStaticFiles();
+
+app.MapFallbackToFile("index.html");
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

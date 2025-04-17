@@ -71,5 +71,19 @@ namespace Kuhinja.Controllers
             var result = await query.ToListAsync();
             return Ok(result);
         }
+        [Route("preuzmiKategorije")]
+        [HttpGet]
+        public async Task<ActionResult> preuzmiKategorije()
+        {
+            var categories = await Context.Categories.ToListAsync();
+            return Ok(categories);
+        }
+        [Route("preuzmiSastojke")]
+        [HttpGet]
+        public async Task<ActionResult> preuzmiSastojke()
+        {
+            var ingredients = await Context.Ingredients.ToListAsync();
+            return Ok(ingredients);
+        }
     }
 }

@@ -1,11 +1,54 @@
 {
   "Version": 1,
-  "Hash": "2BDWwshouxPtsWLt79EnAt5xA43QSmu6UKKm0Sh2b9U=",
+  "Hash": "/PhaLDaQ086N/wa9+sVIm3dqBNz30t2A45O3DxK7Kg4=",
   "Source": "Kuhinja",
   "BasePath": "_content/Kuhinja",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "Kuhinja\\wwwroot",
+      "Source": "Kuhinja",
+      "ContentRoot": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\",
+      "BasePath": "_content/Kuhinja",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\index.html",
+      "SourceId": "Kuhinja",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\",
+      "BasePath": "_content/Kuhinja",
+      "RelativePath": "index.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    },
+    {
+      "Identity": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\script.js",
+      "SourceId": "Kuhinja",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\",
+      "BasePath": "_content/Kuhinja",
+      "RelativePath": "script.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\script.js"
+    }
+  ]
 }
