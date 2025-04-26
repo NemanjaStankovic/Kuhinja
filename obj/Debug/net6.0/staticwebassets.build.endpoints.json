@@ -1,73 +1,19 @@
 {
   "Version": 1,
-  "Hash": "d4d2MlYBLJ0XP/0GRbRqPR2I94mC9Sg/TRtfRJateXE=",
-  "Source": "Kuhinja",
-  "BasePath": "_content/Kuhinja",
-  "Mode": "Default",
   "ManifestType": "Build",
-  "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [
-    {
-      "Name": "Kuhinja\\wwwroot",
-      "Source": "Kuhinja",
-      "ContentRoot": "C:\\Users\\PC\\source\\repos\\Kuhinja\\wwwroot\\",
-      "BasePath": "_content/Kuhinja",
-      "Pattern": "**"
-    }
-  ],
-  "Assets": [
-    {
-      "Identity": "C:\\Users\\PC\\source\\repos\\Kuhinja\\wwwroot\\index.html",
-      "SourceId": "Kuhinja",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\PC\\source\\repos\\Kuhinja\\wwwroot\\",
-      "BasePath": "_content/Kuhinja",
-      "RelativePath": "index#[.{fingerprint}]?.html",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "Fingerprint": "dtrurvhcjs",
-      "Integrity": "rzDO7yM2kcDuXheSradWRkJcX4LFi3kYpd2/Svip2G8=",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\index.html"
-    },
-    {
-      "Identity": "C:\\Users\\PC\\source\\repos\\Kuhinja\\wwwroot\\script.js",
-      "SourceId": "Kuhinja",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\PC\\source\\repos\\Kuhinja\\wwwroot\\",
-      "BasePath": "_content/Kuhinja",
-      "RelativePath": "script#[.{fingerprint}]?.js",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "Fingerprint": "tjx0otj4yg",
-      "Integrity": "J3oqvy3/Ulqi5YuRmGKbyfr4F5Wu7V4TKTLltnCYd5I=",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\script.js"
-    }
-  ],
   "Endpoints": [
     {
       "Route": "index.dtrurvhcjs.html",
-      "AssetFile": "C:\\Users\\PC\\source\\repos\\Kuhinja\\wwwroot\\index.html",
+      "AssetFile": "index.html",
       "Selectors": [],
       "ResponseHeaders": [
         {
           "Name": "Accept-Ranges",
           "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
         },
         {
           "Name": "Content-Length",
@@ -84,10 +30,6 @@
         {
           "Name": "Last-Modified",
           "Value": "Fri, 25 Apr 2025 19:39:29 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
         }
       ],
       "EndpointProperties": [
@@ -96,23 +38,27 @@
           "Value": "dtrurvhcjs"
         },
         {
-          "Name": "label",
-          "Value": "index.html"
-        },
-        {
           "Name": "integrity",
           "Value": "sha256-rzDO7yM2kcDuXheSradWRkJcX4LFi3kYpd2/Svip2G8="
+        },
+        {
+          "Name": "label",
+          "Value": "index.html"
         }
       ]
     },
     {
       "Route": "index.html",
-      "AssetFile": "C:\\Users\\PC\\source\\repos\\Kuhinja\\wwwroot\\index.html",
+      "AssetFile": "index.html",
       "Selectors": [],
       "ResponseHeaders": [
         {
           "Name": "Accept-Ranges",
           "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
         },
         {
           "Name": "Content-Length",
@@ -129,10 +75,6 @@
         {
           "Name": "Last-Modified",
           "Value": "Fri, 25 Apr 2025 19:39:29 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
         }
       ],
       "EndpointProperties": [
@@ -144,12 +86,16 @@
     },
     {
       "Route": "script.js",
-      "AssetFile": "C:\\Users\\PC\\source\\repos\\Kuhinja\\wwwroot\\script.js",
+      "AssetFile": "script.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
           "Name": "Accept-Ranges",
           "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
         },
         {
           "Name": "Content-Length",
@@ -166,10 +112,6 @@
         {
           "Name": "Last-Modified",
           "Value": "Fri, 25 Apr 2025 19:39:29 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
         }
       ],
       "EndpointProperties": [
@@ -181,12 +123,16 @@
     },
     {
       "Route": "script.tjx0otj4yg.js",
-      "AssetFile": "C:\\Users\\PC\\source\\repos\\Kuhinja\\wwwroot\\script.js",
+      "AssetFile": "script.js",
       "Selectors": [],
       "ResponseHeaders": [
         {
           "Name": "Accept-Ranges",
           "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
         },
         {
           "Name": "Content-Length",
@@ -203,10 +149,6 @@
         {
           "Name": "Last-Modified",
           "Value": "Fri, 25 Apr 2025 19:39:29 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
         }
       ],
       "EndpointProperties": [
@@ -215,12 +157,12 @@
           "Value": "tjx0otj4yg"
         },
         {
-          "Name": "label",
-          "Value": "script.js"
-        },
-        {
           "Name": "integrity",
           "Value": "sha256-J3oqvy3/Ulqi5YuRmGKbyfr4F5Wu7V4TKTLltnCYd5I="
+        },
+        {
+          "Name": "label",
+          "Value": "script.js"
         }
       ]
     }

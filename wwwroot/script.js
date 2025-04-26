@@ -13,8 +13,8 @@
             .then(response => response.json())
             .then(data => {
                 const formatted = data.map(item => ({
-                    index: item.id,
-                    value:item.name
+                    id: item.id,
+                    name:item.name
                 }))
                 this.setState({options: formatted})
             })
@@ -23,31 +23,31 @@
         })
     }
     addCategory = (itemCtg) => {
-        console.log(itemCtg);
         this.setState((prevState)=>({...prevState, selected:[...prevState.selected, itemCtg]}))
-        console.log(this.state.selected);
     }
     handleChange = (e, itemCtg) => {
         var matchedOption;
-        console.log(itemCtg);
         if(!itemCtg)
         {
             const inputValue = this.inputRef.current.value;
-            matchedOption = this.state.options.find(e=>e.value==inputValue);
+            matchedOption = this.state.options.find(e=>e.name==inputValue);
         }
         else
         {
             matchedOption=itemCtg;
         }
-        console.log(matchedOption && !this.state.selected.some(e=>e.value==matchedOption.value));
-        matchedOption && !this.state.selected.some(e=>e.value==matchedOption.value)?this.setState((prevState)=>({...prevState, selected: [...prevState.selected, matchedOption]})):null;
+        console.log(matchedOption);
+        matchedOption && !this.state.selected.some(e=>e.name==matchedOption.name)?(this.setState((prevState)=>({...prevState, selected: [...prevState.selected, matchedOption]})), this.inputRef.current.value=''):null;
         fetch('https://localhost:7003/Recipe/preuzmiRecepte')
             .then(response => response.json())    
             .then(data => {
                 this.setState({recipes:data});
             });
-        console.log(this.state);
-
+    }
+    removeCategory = (e, id) => {
+        console.log('removing category ', id);
+        this.setState((prevState)=>({selected:prevState.selected.filter(e=>e.id!=id)}));
+        console.log(this.state.selected);
     }
     render() {
         return (
@@ -57,14 +57,14 @@
                 <datalist id="searchCat-categories">
                 {
                 this.state.options!=null && this.state.options.length!=0?this.state.options.map((ctg) => (
-                    <option key={ctg.index} value={ctg.value}>{ctg.value}</option>
+                    <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
                 )):(<option>none</option>)
                 }
                 </datalist>
                 <button onClick={(e)=>this.handleChange(e, null)}>Confirm</button>
                 {
                     this.state.selected.map(e => (
-                    <button key={e.index}>{e.value}</button>
+                    <button key={e.id}>{e.name}<span onClick={(event)=>this.removeCategory(event, e.id)}>❌</span></button>
                 ))
                 }
                 <div>
@@ -78,7 +78,7 @@
                             )}
                             <h4>Recipe ingredients</h4>
                             {item.ingredients.map(itemIng=>
-                                <button  value={itemIng}>{itemIng.name}</button>
+                                <button  key={itemIng.id} value={itemIng}>{itemIng.name}</button>
                             )}
                         </div>
                     )}
