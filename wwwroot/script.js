@@ -17,13 +17,25 @@
                     name:item.name
                 }))
                 this.setState({options: formatted})
-            })
+            }).then(
+                fetch('https://localhost:7003/Recipe/preuzmiRecepte')
+                .then(response => response.json())    
+                .then(data => {
+                    this.setState({recipes:data});
+                }))
             .catch(error => {
-                console.error('Error fetching data:', error)
-        })
+                console.error('Error fetching data:', error);
+        });
     }
     addCategory = (itemCtg) => {
         this.setState((prevState)=>({...prevState, selected:[...prevState.selected, itemCtg]}))
+    }
+    preuzmiRecepte(url){
+        fetch('https://localhost:7003/Recipe/preuzmiRecepte'+url)
+            .then(response => response.json())    
+            .then(data => {
+                this.setState({recipes:data});
+            });
     }
     handleChange = (e, itemCtg) => {
         var matchedOption;
@@ -36,18 +48,20 @@
         {
             matchedOption=itemCtg;
         }
-        console.log(matchedOption);
-        matchedOption && !this.state.selected.some(e=>e.name==matchedOption.name)?(this.setState((prevState)=>({...prevState, selected: [...prevState.selected, matchedOption]})), this.inputRef.current.value=''):null;
-        fetch('https://localhost:7003/Recipe/preuzmiRecepte')
-            .then(response => response.json())    
-            .then(data => {
-                this.setState({recipes:data});
-            });
+        matchedOption && !this.state.selected.some(e=>e.name==matchedOption.name)?(this.setState((prevState)=>({...prevState, selected: [...prevState.selected, matchedOption]}),  () => {this.preuzmiRecepte(this.selectedToUrl())}), this.inputRef.current.value=''):null;
+    }
+    selectedToUrl(){
+        if(this.state.selected.length>0)
+        {
+            return '?'+this.state.selected.reduce((acc, curr) => {return acc + 'categories=' + curr.name.replace(' ','%20')+'&';}, '').slice(0,-1);
+        }
+        else
+        {
+            return '';
+        }
     }
     removeCategory = (e, id) => {
-        console.log('removing category ', id);
-        this.setState((prevState)=>({selected:prevState.selected.filter(e=>e.id!=id)}));
-        console.log(this.state.selected);
+        this.setState((prevState)=>({selected:prevState.selected.filter(e=>e.id!=id)}), () => {this.preuzmiRecepte(this.selectedToUrl())});
     }
     render() {
         return (
@@ -87,8 +101,6 @@
         );
     }
 }
-
-
 // Render app
 ReactDOM.render(
     <SearchBox/>,

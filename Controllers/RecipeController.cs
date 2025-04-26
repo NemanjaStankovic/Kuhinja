@@ -60,14 +60,13 @@ namespace Kuhinja.Controllers
                 .Include(r => r.Ingredients)
                 .AsQueryable();
             if (categories != null && categories.Any())
-            {
-                query = query.Where(r => r.Categories.Any(c => categories.Contains(c.Name)));
+            {                              //kategorije entiteta
+                query = query.Where(r => r.Categories.Where(c=>categories.Contains(c.Name)).Count() == categories.Count());
             }
             if (ingredients != null && ingredients.Any())
             {
-                query = query.Where(r => r.Ingredients.Any(i => ingredients.Contains(i.Name)));
+                query = query.Where(r => r.Ingredients.Where(i=>ingredients.Contains(i.Name)).Count() == ingredients.Count());
             }
-
             var result = await query.ToListAsync();
             return Ok(result);
         }

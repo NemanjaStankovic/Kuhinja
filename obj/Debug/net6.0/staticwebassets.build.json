@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "d4d2MlYBLJ0XP/0GRbRqPR2I94mC9Sg/TRtfRJateXE=",
+  "Hash": "8YaxB3y1p06P6KWmqgz1YNmO+1tWZ7sKJZMNG5Ce9Pg=",
   "Source": "Kuhinja",
   "BasePath": "_content/Kuhinja",
   "Mode": "Default",
@@ -52,8 +52,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "tjx0otj4yg",
-      "Integrity": "J3oqvy3/Ulqi5YuRmGKbyfr4F5Wu7V4TKTLltnCYd5I=",
+      "Fingerprint": "eknz011bn8",
+      "Integrity": "8ilpaa0sS8m3e8+4uCsuaFcYeitQ5CnpT8HGvVPCibU=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\script.js"
@@ -143,6 +143,51 @@
       ]
     },
     {
+      "Route": "script.eknz011bn8.js",
+      "AssetFile": "C:\\Users\\PC\\source\\repos\\Kuhinja\\wwwroot\\script.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4180"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"8ilpaa0sS8m3e8+4uCsuaFcYeitQ5CnpT8HGvVPCibU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 26 Apr 2025 18:02:33 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "eknz011bn8"
+        },
+        {
+          "Name": "label",
+          "Value": "script.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-8ilpaa0sS8m3e8+4uCsuaFcYeitQ5CnpT8HGvVPCibU="
+        }
+      ]
+    },
+    {
       "Route": "script.js",
       "AssetFile": "C:\\Users\\PC\\source\\repos\\Kuhinja\\wwwroot\\script.js",
       "Selectors": [],
@@ -153,7 +198,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "3635"
+          "Value": "4180"
         },
         {
           "Name": "Content-Type",
@@ -161,11 +206,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"J3oqvy3/Ulqi5YuRmGKbyfr4F5Wu7V4TKTLltnCYd5I=\""
+          "Value": "\"8ilpaa0sS8m3e8+4uCsuaFcYeitQ5CnpT8HGvVPCibU=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 25 Apr 2025 19:39:29 GMT"
+          "Value": "Sat, 26 Apr 2025 18:02:33 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -175,52 +220,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-J3oqvy3/Ulqi5YuRmGKbyfr4F5Wu7V4TKTLltnCYd5I="
-        }
-      ]
-    },
-    {
-      "Route": "script.tjx0otj4yg.js",
-      "AssetFile": "C:\\Users\\PC\\source\\repos\\Kuhinja\\wwwroot\\script.js",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "3635"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"J3oqvy3/Ulqi5YuRmGKbyfr4F5Wu7V4TKTLltnCYd5I=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Fri, 25 Apr 2025 19:39:29 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "tjx0otj4yg"
-        },
-        {
-          "Name": "label",
-          "Value": "script.js"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-J3oqvy3/Ulqi5YuRmGKbyfr4F5Wu7V4TKTLltnCYd5I="
+          "Value": "sha256-8ilpaa0sS8m3e8+4uCsuaFcYeitQ5CnpT8HGvVPCibU="
         }
       ]
     }
