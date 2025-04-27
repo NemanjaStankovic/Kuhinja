@@ -3,10 +3,13 @@
         super(props)
         this.state = {
             options: [],
+            ingredients: [],
             selected: [],
+            selectedIngredients: [],
             recipes: []
         }
         this.inputRef = React.createRef();
+        this.ingrRef = React.createRef();
     }
     componentDidMount() {
         fetch('https://localhost:7003/Recipe/preuzmiKategorije')
@@ -17,6 +20,18 @@
                     name:item.name
                 }))
                 this.setState({options: formatted})
+            }).then(
+                fetch('https://localhost:7003/Recipe/preuzmiSastojke')
+                .then(response => response.json())
+                .then(data => {
+                    const formatted = data.map(item => ({
+                        id: item.id,
+                        name:item.name
+                    }))
+                    this.setState({ingredients: formatted})
+                }))
+            .catch(error => {
+                console.error('Error fetching data:', error);
             }).then(
                 fetch('https://localhost:7003/Recipe/preuzmiRecepte')
                 .then(response => response.json())    
@@ -50,18 +65,37 @@
         }
         matchedOption && !this.state.selected.some(e=>e.name==matchedOption.name)?(this.setState((prevState)=>({...prevState, selected: [...prevState.selected, matchedOption]}),  () => {this.preuzmiRecepte(this.selectedToUrl())}), this.inputRef.current.value=''):null;
     }
-    selectedToUrl(){
-        if(this.state.selected.length>0)
+    handleIngredientChange = (e, itemIng) => {
+        var matchedOption;
+        if(!itemIng)
         {
-            return '?'+this.state.selected.reduce((acc, curr) => {return acc + 'categories=' + curr.name.replace(' ','%20')+'&';}, '').slice(0,-1);
+            const inputValue = this.ingrRef.current.value;
+            matchedOption = this.state.ingredients.find(e=>e.name==inputValue);
         }
         else
         {
-            return '';
+            matchedOption=itemIng;
         }
+        matchedOption && !this.state.selectedIngredients.some(e=>e.name==matchedOption.name)?(this.setState((prevState)=>({...prevState, selectedIngredients: [...prevState.selectedIngredients, matchedOption]}), () => {this.preuzmiRecepte(this.selectedToUrl())}), this.ingrRef.current.value=''):null;
+    }
+    selectedToUrl(){
+        var urlExtension = '';
+        if(this.state.selected.length>0)
+        {
+            urlExtension += '?'+this.state.selected.reduce((acc, curr) => {return acc + 'categories=' + curr.name.replace(' ','%20')+'&';}, '').slice(0,-1);
+        }
+        urlExtension+=urlExtension!=''?'&':'?';
+        if(this.state.options.length>0)
+        {
+            urlExtension +=  this.state.selectedIngredients.reduce((acc, curr) => {return acc + 'ingredients=' + curr.name.replace(' ', '%20')+'&';}, '').slice(0,-1);
+        }
+        return urlExtension;
     }
     removeCategory = (e, id) => {
         this.setState((prevState)=>({selected:prevState.selected.filter(e=>e.id!=id)}), () => {this.preuzmiRecepte(this.selectedToUrl())});
+    }
+    removeIngredient = (e, id) => {
+        this.setState((prevState)=>({selectedIngredients: prevState.selectedIngredients.filter(e=>e.id!=id)}), () => {this.preuzmiRecepte(this.selectedToUrl())});
     }
     render() {
         return (
@@ -81,6 +115,21 @@
                     <button key={e.id}>{e.name}<span onClick={(event)=>this.removeCategory(event, e.id)}>❌</span></button>
                 ))
                 }
+                <label for="searchIng">Choose an ingredient:</label>
+                <input list="searchIng-ingredients" id="searchIng" name="searchInt" ref={this.ingrRef}/>
+                <datalist id="searchIng-ingredients">
+                {
+                this.state.ingredients!=null && this.state.ingredients.length!=0?this.state.ingredients.map((ing) => (
+                    <option key={ing.id} value={ing.name}>{ing.name}</option>
+                )):(<option>none</option>)
+                }
+                </datalist>
+                <button onClick={(e)=>this.handleIngredientChange(e, null)}>Confirm</button>
+                {
+                    this.state.selectedIngredients.map(e => (
+                    <button key={e.id}>{e.name}<span onClick={(event)=>this.removeIngredient(event, e.id)}>❌</span></button>
+                ))
+                }
                 <div>
                     {this.state.recipes.map(item=>
                         <div>
@@ -88,7 +137,7 @@
                             <h3>{item.instructions}</h3>
                             <h4>Recipe categories</h4>
                             {item.categories.map(itemCtg=>
-                                <button onClick={(e)=>this.handleChange(e, itemCtg)}>{itemCtg.name}</button>
+                                <button onClick={(e)=>this.handleIngredientChange(e, itemCtg)}>{itemCtg.name}</button>
                             )}
                             <h4>Recipe ingredients</h4>
                             {item.ingredients.map(itemIng=>
