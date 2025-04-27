@@ -1,157 +1,160 @@
-﻿class SearchBox extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            options: [],
-            ingredients: [],
-            selected: [],
-            selectedIngredients: [],
-            recipes: []
-        }
-        this.inputRef = React.createRef();
-        this.ingrRef = React.createRef();
-    }
-    componentDidMount() {
-        fetch('https://localhost:7003/Recipe/preuzmiKategorije')
-            .then(response => response.json())
-            .then(data => {
-                const formatted = data.map(item => ({
-                    id: item.id,
-                    name:item.name
-                }))
-                this.setState({options: formatted})
-            }).then(
-                fetch('https://localhost:7003/Recipe/preuzmiSastojke')
-                .then(response => response.json())
-                .then(data => {
-                    const formatted = data.map(item => ({
-                        id: item.id,
-                        name:item.name
-                    }))
-                    this.setState({ingredients: formatted})
-                }))
-            .catch(error => {
+﻿const {useState, useEffect, useRef} = React;
+
+function SearchBox() {
+    const [options, setOptions] = useState([]);
+    const [ingredients, setIngredients] = useState([]);
+    const [selected, setSelected] = useState([]);
+    const [selectedIngredients, setSelectedIngredients] = useState([]);
+    const [recipes, setRecipes] = useState([]);
+    const inputRef = useRef(null);
+    const ingrRef = useRef(null);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const [categoriesRes, ingredientsRes, recipesRes] = await Promise.all([
+                    fetch('https://localhost:7003/Recipe/preuzmiKategorije').then(res => res.json()),
+                    fetch('https://localhost:7003/Recipe/preuzmiSastojke').then(res => res.json()),
+                    fetch('https://localhost:7003/Recipe/preuzmiRecepte').then(res => res.json())
+                ]);
+                
+                setOptions(categoriesRes.map(item => ({ id: item.id, name: item.name })));
+                setIngredients(ingredientsRes.map(item => ({ id: item.id, name: item.name })));
+                setRecipes(recipesRes);
+            } catch (error) {
                 console.error('Error fetching data:', error);
-            }).then(
-                fetch('https://localhost:7003/Recipe/preuzmiRecepte')
-                .then(response => response.json())    
-                .then(data => {
-                    this.setState({recipes:data});
-                }))
-            .catch(error => {
-                console.error('Error fetching data:', error);
-        });
-    }
-    addCategory = (itemCtg) => {
-        this.setState((prevState)=>({...prevState, selected:[...prevState.selected, itemCtg]}))
-    }
-    preuzmiRecepte(url){
-        fetch('https://localhost:7003/Recipe/preuzmiRecepte'+url)
-            .then(response => response.json())    
-            .then(data => {
-                this.setState({recipes:data});
-            });
-    }
-    handleChange = (e, itemCtg) => {
-        var matchedOption;
-        if(!itemCtg)
-        {
-            const inputValue = this.inputRef.current.value;
-            matchedOption = this.state.options.find(e=>e.name==inputValue);
+            }
         }
-        else
-        {
-            matchedOption=itemCtg;
+
+        fetchData();
+    }, []);
+
+    function selectedToUrl() {
+        let urlExtension = '';
+        if (selected.length > 0) {
+            urlExtension += '?' + selected.reduce((acc, curr) => acc + 'categories=' + encodeURIComponent(curr.name) + '&', '').slice(0, -1);
         }
-        matchedOption && !this.state.selected.some(e=>e.name==matchedOption.name)?(this.setState((prevState)=>({...prevState, selected: [...prevState.selected, matchedOption]}),  () => {this.preuzmiRecepte(this.selectedToUrl())}), this.inputRef.current.value=''):null;
-    }
-    handleIngredientChange = (e, itemIng) => {
-        var matchedOption;
-        if(!itemIng)
-        {
-            const inputValue = this.ingrRef.current.value;
-            matchedOption = this.state.ingredients.find(e=>e.name==inputValue);
-        }
-        else
-        {
-            matchedOption=itemIng;
-        }
-        matchedOption && !this.state.selectedIngredients.some(e=>e.name==matchedOption.name)?(this.setState((prevState)=>({...prevState, selectedIngredients: [...prevState.selectedIngredients, matchedOption]}), () => {this.preuzmiRecepte(this.selectedToUrl())}), this.ingrRef.current.value=''):null;
-    }
-    selectedToUrl(){
-        var urlExtension = '';
-        if(this.state.selected.length>0)
-        {
-            urlExtension += '?'+this.state.selected.reduce((acc, curr) => {return acc + 'categories=' + curr.name.replace(' ','%20')+'&';}, '').slice(0,-1);
-        }
-        urlExtension+=urlExtension!=''?'&':'?';
-        if(this.state.options.length>0)
-        {
-            urlExtension +=  this.state.selectedIngredients.reduce((acc, curr) => {return acc + 'ingredients=' + curr.name.replace(' ', '%20')+'&';}, '').slice(0,-1);
+        urlExtension += urlExtension !== '' ? '&' : '?';
+        if (selectedIngredients.length > 0) {
+            urlExtension += selectedIngredients.reduce((acc, curr) => acc + 'ingredients=' + encodeURIComponent(curr.name) + '&', '').slice(0, -1);
         }
         return urlExtension;
     }
-    removeCategory = (e, id) => {
-        this.setState((prevState)=>({selected:prevState.selected.filter(e=>e.id!=id)}), () => {this.preuzmiRecepte(this.selectedToUrl())});
+
+    async function preuzmiRecepte(url) {
+        try {
+            const response = await fetch('https://localhost:7003/Recipe/preuzmiRecepte' + url);
+            const data = await response.json();
+            setRecipes(data);
+        } catch (error) {
+            console.error('Error fetching recipes:', error);
+        }
     }
-    removeIngredient = (e, id) => {
-        this.setState((prevState)=>({selectedIngredients: prevState.selectedIngredients.filter(e=>e.id!=id)}), () => {this.preuzmiRecepte(this.selectedToUrl())});
-    }
-    render() {
-        return (
-            <div>
-                <label for="searchCat">Choose a category:</label>
-                <input list="searchCat-categories" id="searchCat" name="searchCat" ref={this.inputRef}/>
-                <datalist id="searchCat-categories">
-                {
-                this.state.options!=null && this.state.options.length!=0?this.state.options.map((ctg) => (
-                    <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
-                )):(<option>none</option>)
-                }
-                </datalist>
-                <button onClick={(e)=>this.handleChange(e, null)}>Confirm</button>
-                {
-                    this.state.selected.map(e => (
-                    <button key={e.id}>{e.name}<span onClick={(event)=>this.removeCategory(event, e.id)}>❌</span></button>
-                ))
-                }
-                <label for="searchIng">Choose an ingredient:</label>
-                <input list="searchIng-ingredients" id="searchIng" name="searchInt" ref={this.ingrRef}/>
-                <datalist id="searchIng-ingredients">
-                {
-                this.state.ingredients!=null && this.state.ingredients.length!=0?this.state.ingredients.map((ing) => (
-                    <option key={ing.id} value={ing.name}>{ing.name}</option>
-                )):(<option>none</option>)
-                }
-                </datalist>
-                <button onClick={(e)=>this.handleIngredientChange(e, null)}>Confirm</button>
-                {
-                    this.state.selectedIngredients.map(e => (
-                    <button key={e.id}>{e.name}<span onClick={(event)=>this.removeIngredient(event, e.id)}>❌</span></button>
-                ))
-                }
-                <div>
-                    {this.state.recipes.map(item=>
-                        <div>
-                            <h1 key={item.id}>{item.title}</h1>
-                            <h3>{item.instructions}</h3>
-                            <h4>Recipe categories</h4>
-                            {item.categories.map(itemCtg=>
-                                <button onClick={(e)=>this.handleIngredientChange(e, itemCtg)}>{itemCtg.name}</button>
-                            )}
-                            <h4>Recipe ingredients</h4>
-                            {item.ingredients.map(itemIng=>
-                                <button  key={itemIng.id} value={itemIng}>{itemIng.name}</button>
-                            )}
-                        </div>
-                    )}
-                </div>
-            </div>
-        );
-    }
+
+    const handleCategoryChange = (e, itemCtg = null) => {
+        const matchedOption = itemCtg || options.find(opt => opt.name === inputRef.current.value);
+        if (matchedOption && !selected.some(sel => sel.name === matchedOption.name)) {
+            setSelected(prev => [...prev, matchedOption]);
+            preuzmiRecepte(selectedToUrl());
+        }
+        if (!itemCtg) inputRef.current.value = '';
+    };
+
+    const handleIngredientChange = (e, itemIng = null) => {
+        const matchedOption = itemIng || ingredients.find(opt => opt.name === ingrRef.current.value);
+        if (matchedOption && !selectedIngredients.some(sel => sel.name === matchedOption.name)) {
+            setSelectedIngredients(prev => [...prev, matchedOption]);
+            preuzmiRecepte(selectedToUrl());
+        }
+        if (!itemIng) ingrRef.current.value = '';
+    };
+
+    const removeCategory = (id) => {
+        setSelected(prev => prev.filter(e => e.id !== id));
+        setTimeout(() => preuzmiRecepte(selectedToUrl()), 0);
+    };
+
+    const removeIngredient = (id) => {
+        setSelectedIngredients(prev => prev.filter(e => e.id !== id));
+        setTimeout(() => preuzmiRecepte(selectedToUrl()), 0);
+    };
+
+    return (
+        <div>
+            <SearchInputs 
+                options={options}
+                ingredients={ingredients}
+                selected={selected}
+                selectedIngredients={selectedIngredients}
+                inputRef={inputRef}
+                ingrRef={ingrRef}
+                handleCategoryChange={handleCategoryChange}
+                handleIngredientChange={handleIngredientChange}
+                removeCategory={removeCategory}
+                removeIngredient={removeIngredient}
+            />
+            <RecipeList recipes={recipes} />
+        </div>
+    );
 }
-// Render app
-ReactDOM.render(
-    <SearchBox/>,
-    document.getElementById("root")
-);
+
+function SearchInputs({ options, ingredients, selected, selectedIngredients, inputRef, ingrRef, handleCategoryChange, handleIngredientChange, removeCategory, removeIngredient }) {
+    return (
+        <div>
+            <label htmlFor="searchCat">Choose a category:</label>
+            <input list="searchCat-categories" id="searchCat" name="searchCat" ref={inputRef}/>
+            <datalist id="searchCat-categories">
+                {options.length > 0 ? options.map(ctg => (
+                    <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
+                )) : (<option>none</option>)}
+            </datalist>
+            <button onClick={(e) => handleCategoryChange(e, null)}>Confirm</button>
+
+            {selected.map(e => (
+                <button key={e.id}>
+                    {e.name} <span onClick={() => removeCategory(e.id)}>❌</span>
+                </button>
+            ))}
+
+            <label htmlFor="searchIng">Choose an ingredient:</label>
+            <input list="searchIng-ingredients" id="searchIng" name="searchIng" ref={ingrRef}/>
+            <datalist id="searchIng-ingredients">
+                {ingredients.length > 0 ? ingredients.map(ing => (
+                    <option key={ing.id} value={ing.name}>{ing.name}</option>
+                )) : (<option>none</option>)}
+            </datalist>
+            <button onClick={(e) => handleIngredientChange(e, null)}>Confirm</button>
+
+            {selectedIngredients.map(e => (
+                <button key={e.id}>
+                    {e.name} <span onClick={() => removeIngredient(e.id)}>❌</span>
+                </button>
+            ))}
+        </div>
+    );
+}
+
+function RecipeList({ recipes }) {
+    return (
+        <div>
+            {recipes.map(item => (
+                <div key={item.id}>
+                    <h1>{item.title}</h1>
+                    <h3>{item.instructions}</h3>
+                    <h4>Recipe categories</h4>
+                    {item.categories.map(itemCtg => (
+                        <button key={itemCtg.id}>{itemCtg.name}</button>
+                    ))}
+                    <h4>Recipe ingredients</h4>
+                    {item.ingredients.map(itemIng => (
+                        <button key={itemIng.id}>{itemIng.name}</button>
+                    ))}
+                </div>
+            ))}
+        </div>
+    );
+}
+
+// Render it!
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<SearchBox />);
