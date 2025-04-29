@@ -11,7 +11,8 @@ namespace Kuhinja.Models
         public string Instructions { get; set; }
         public string ImageUrl { get; set; }    
         public List<Category> Categories { get; set; }
-        public List<Ingredient> Ingredients { get; set; }
+        public List<RecipeIngredients> RecipeIngredients { get; set; }
+
         public int UserId { get; set; }  // Foreign key to User (must be of type 'int')
         public User User { get; set; }    // Navigation property
         public DateTime Created_at { get; set; }

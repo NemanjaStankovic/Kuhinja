@@ -146,7 +146,7 @@ function RecipeList({ recipes }) {
                         <button key={itemCtg.id}>{itemCtg.name}</button>
                     ))}
                     <h4>Recipe ingredients</h4>
-                    {item.ingredients.map(itemIng => (
+                    {item.recipeIngredients.map(itemIng => (
                         <button key={itemIng.id}>{itemIng.name}</button>
                     ))}
                 </div>

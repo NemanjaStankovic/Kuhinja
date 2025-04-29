@@ -10,7 +10,7 @@ namespace Kuhinja.Models
         [RegularExpression("\\w+")]
         public string Name { get; set; }
         [Required]
-        [RegularExpression("\\w")]
+        [RegularExpression("\\w+")]
         public string Surname { get; set; }
         [Required]
         [EmailAddress]

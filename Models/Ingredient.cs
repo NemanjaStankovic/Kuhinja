@@ -10,7 +10,8 @@ namespace Kuhinja.Models
         [Required]
         [RegularExpression("\\w+")]
         public string Name { get; set; }
+        public string UnitOfMeassure { get; set; }
         [JsonIgnore]
-        public List<Recipe> Recipes { get; set; }
+        public List<RecipeIngredients> RecipeIngredients { get; set; }
     }
 }
