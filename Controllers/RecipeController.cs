@@ -89,6 +89,7 @@ namespace Kuhinja.Controllers
             var query = Context.Recipes
                 .Include(r => r.Categories)
                 .Include(r => r.RecipeIngredients)
+                .ThenInclude(ri=> ri.Ingredient)
                 .AsQueryable();
             if (categories != null && categories.Any())
             {                              //kategorije entiteta
@@ -96,7 +97,7 @@ namespace Kuhinja.Controllers
             }
             if (ingredients != null && ingredients.Any())
             {
-                query = query.Where(r => r.RecipeIngredients.Where(i=>ingredients.Contains(i.Ingredient.Name)).Count() == ingredients.Count());
+                query = query.Where(r => r.RecipeIngredients.Where(ri => ingredients.Contains(ri.Ingredient.Name)).Count() == ingredients.Count());
             }
             var result = await query.ToListAsync();
             return Ok(result);

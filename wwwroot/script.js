@@ -10,6 +10,10 @@ function SearchBox() {
     const ingrRef = useRef(null);
 
     useEffect(() => {
+        preuzmiRecepte(selectedToUrl());
+    }, [selected, selectedIngredients]);
+
+    useEffect(() => {
         async function fetchData() {
             try {
                 const [categoriesRes, ingredientsRes, recipesRes] = await Promise.all([
@@ -19,8 +23,9 @@ function SearchBox() {
                 ]);
                 
                 setOptions(categoriesRes.map(item => ({ id: item.id, name: item.name })));
-                setIngredients(ingredientsRes.map(item => ({ id: item.id, name: item.name })));
+                setIngredients(ingredientsRes.map(item => ({ id: item.id, name: item.name, unitOfMeassure: item.unitOfMeassure })));
                 setRecipes(recipesRes);
+                console.log({ categoriesRes, ingredientsRes, recipesRes });
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -52,10 +57,10 @@ function SearchBox() {
     }
 
     const handleCategoryChange = (e, itemCtg = null) => {
+        console.log('Category changed');
         const matchedOption = itemCtg || options.find(opt => opt.name === inputRef.current.value);
         if (matchedOption && !selected.some(sel => sel.name === matchedOption.name)) {
             setSelected(prev => [...prev, matchedOption]);
-            preuzmiRecepte(selectedToUrl());
         }
         if (!itemCtg) inputRef.current.value = '';
     };
@@ -64,19 +69,17 @@ function SearchBox() {
         const matchedOption = itemIng || ingredients.find(opt => opt.name === ingrRef.current.value);
         if (matchedOption && !selectedIngredients.some(sel => sel.name === matchedOption.name)) {
             setSelectedIngredients(prev => [...prev, matchedOption]);
-            preuzmiRecepte(selectedToUrl());
         }
         if (!itemIng) ingrRef.current.value = '';
     };
 
     const removeCategory = (id) => {
         setSelected(prev => prev.filter(e => e.id !== id));
-        setTimeout(() => preuzmiRecepte(selectedToUrl()), 0);
     };
 
     const removeIngredient = (id) => {
         setSelectedIngredients(prev => prev.filter(e => e.id !== id));
-        setTimeout(() => preuzmiRecepte(selectedToUrl()), 0);
+        // setTimeout(() => preuzmiRecepte(selectedToUrl()), 0);
     };
 
     return (
@@ -93,7 +96,16 @@ function SearchBox() {
                 removeCategory={removeCategory}
                 removeIngredient={removeIngredient}
             />
-            <RecipeList recipes={recipes} />
+            <RecipeList 
+                recipes={recipes}
+                options={options}
+                ingredients={ingredients}
+                selected={selected}
+                selectedIngredients={selectedIngredients}
+                handleCategoryChange={handleCategoryChange}
+                handleIngredientChange={handleIngredientChange}
+                removeCategory={removeCategory}
+                removeIngredient={removeIngredient} />
         </div>
     );
 }
@@ -120,7 +132,7 @@ function SearchInputs({ options, ingredients, selected, selectedIngredients, inp
             <input list="searchIng-ingredients" id="searchIng" name="searchIng" ref={ingrRef}/>
             <datalist id="searchIng-ingredients">
                 {ingredients.length > 0 ? ingredients.map(ing => (
-                    <option key={ing.id} value={ing.name}>{ing.name}</option>
+                    <option key={ing.id} value={ing.name}>{ing.name}({ing.unitOfMeassure})</option>
                 )) : (<option>none</option>)}
             </datalist>
             <button onClick={(e) => handleIngredientChange(e, null)}>Confirm</button>
@@ -134,7 +146,7 @@ function SearchInputs({ options, ingredients, selected, selectedIngredients, inp
     );
 }
 
-function RecipeList({ recipes }) {
+function RecipeList({ recipes, options, ingredients, selected, selectedIngredients, handleCategoryChange, handleIngredientChange, removeCategory, removeIngredient}) {
     return (
         <div>
             {recipes.map(item => (
@@ -143,11 +155,11 @@ function RecipeList({ recipes }) {
                     <h3>{item.instructions}</h3>
                     <h4>Recipe categories</h4>
                     {item.categories.map(itemCtg => (
-                        <button key={itemCtg.id}>{itemCtg.name}</button>
+                        <button key={itemCtg.id} onClick={(e)=>handleCategoryChange(e, itemCtg)}>{itemCtg.name}</button>
                     ))}
                     <h4>Recipe ingredients</h4>
                     {item.recipeIngredients.map(itemIng => (
-                        <button key={itemIng.id}>{itemIng.name}</button>
+                        <button key={itemIng.ingredient.id} onClick={(e)=>handleIngredientChange(e, itemIng.ingredient)}>{itemIng.ingredient.name}</button>
                     ))}
                 </div>
             ))}
