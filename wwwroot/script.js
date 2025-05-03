@@ -12,7 +12,12 @@ function SearchBox() {
     useEffect(() => {
         preuzmiRecepte(selectedToUrl());
     }, [selected, selectedIngredients]);
-
+    const fetchIngredients = () => {
+        fetch('https://localhost:7003/Recipe/preuzmiSastojke')
+            .then(res => res.json())
+            .then(data => {console.log("Fetched ingredients:", data);setIngredients(data);})
+            .catch(err => console.error(err));
+    };
     useEffect(() => {
         async function fetchData() {
             try {
@@ -106,6 +111,13 @@ function SearchBox() {
                 handleIngredientChange={handleIngredientChange}
                 removeCategory={removeCategory}
                 removeIngredient={removeIngredient} />
+            <AddRecipe 
+                recipes={recipes}
+                options={options}
+                ingredients={ingredients}
+                selected={selected}
+                selectedIngredients={selectedIngredients}
+                fetchIngredients = {fetchIngredients} />
         </div>
     );
 }
@@ -113,6 +125,8 @@ function SearchBox() {
 function SearchInputs({ options, ingredients, selected, selectedIngredients, inputRef, ingrRef, handleCategoryChange, handleIngredientChange, removeCategory, removeIngredient }) {
     return (
         <div>
+            <h1>Find out what you can make!</h1>
+            <h3>Choose ingredients you have and its amount and show recepies you can make now!</h3>
             <label htmlFor="searchCat">Choose a category:</label>
             <input list="searchCat-categories" id="searchCat" name="searchCat" ref={inputRef}/>
             <datalist id="searchCat-categories">
@@ -167,6 +181,98 @@ function RecipeList({ recipes, options, ingredients, selected, selectedIngredien
     );
 }
 
+function AddRecipe({ options, ingredients, selected, selectedIngredients, fetchIngredients }){
+    const [addRecCat, setAddRecCat] = useState([]);
+    const [addRecIng, setAddRecIng] = useState([]);
+    const addRecCatRef = useRef(null);
+    const addRecIngRef = useRef(null);
+    const optionsUOM = ["komada", "pakovanje", "kašičica", "kašika", "g(grama)","kg(kilograma)","l(litra)","ml(mililitra)", "prstohvat", "po ukusu"];
+    const newIng = useRef(null);
+    const newUOM = useRef(null);
+    const addNewIngredient = (event) => {
+        fetch('https://localhost:7003/Recipe/dodajSastojak/'+newIng.current.value+'/'+newUOM.current.value, {
+            method: 'POST'
+          })
+          .then(res => {
+            if (!res.ok) throw new Error('Failed to add');
+            return res.text();
+          })
+          .then(()=>{
+            alert("Sastojak uspesno dodat!");
+            newIng.current.value='';
+            newUOM.current.value='';
+            fetchIngredients();
+          })
+          .catch(err=>console.error(err));
+    };
+    const handleCategoryChange = (e, itemCtg=null) => {
+        const matchedOption = itemCtg || options.find(opt => opt.name === addRecCatRef.current.value);
+        if (matchedOption && !addRecCat.some(sel => sel.name === matchedOption.name)) {
+            setAddRecCat(prev => [...prev, matchedOption]);
+        }
+        if (!itemCtg) addRecCatRef.current.value = '';
+    }
+    const handleIngredientChange = (e, itemIng=null) => {
+        const matchedOption = itemIng || ingredients.find(opt => opt.name === addRecIngRef.current.value);
+        if (matchedOption && !addRecIng.some(sel => sel.name === matchedOption.name)) {
+            setAddRecIng(prev => [...prev, matchedOption]);
+        }
+        if (!itemIng) addRecIngRef.current.value = '';
+    }
+    const removeCategory = (id) => {
+        setAddRecCat(prev => prev.filter(e => e.id !== id));
+    };
+    const removeIngredient = (id) => {
+        setAddRecIng(prev => prev.filter(e => e.id !== id));
+    };
+    return(
+        <div>
+            <h1>AddRecipe</h1>
+            <label htmlFor="addRecCat">Add Recipe Category:</label>
+            <input list="addRec-categories" id="addRecCat" name="addRecCat" ref={addRecCatRef}/>
+            <datalist id="addRec-categories">
+                {options.length > 0 ? options.map(ctg => (
+                    <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
+                )) : (<option>none</option>)}
+            </datalist>
+            <button onClick={(e) => handleCategoryChange(e, null)}>Confirm</button>
+
+            {addRecCat.map(e => (
+                <button key={e.id}>
+                    {e.name} <span onClick={() => removeCategory(e.id)}>❌</span>
+                </button>
+            ))}
+            <label htmlFor="addRecIng">Add Recipe Ingredient:</label>
+            <input list="addRec-ingredients" id="addRecIng" name="addRecIng" ref={addRecIngRef}/>
+            <datalist id="addRec-ingredients">
+                {ingredients.length > 0 ? ingredients.map(ing => (
+                    <option key={ing.id} value={ing.name}>{ing.name}({ing.unitOfMeassure})</option>
+                )) : (<option>none</option>)}
+            </datalist>
+            <input id="addRec-ingredients-amount" placeholder={`Amount`}/>
+            <button onClick={(e) => handleIngredientChange(e, null)}>Confirm</button>
+            <label>Ingredient doesnt exist? Add it!</label>
+            <input ref={newIng} placeholder="ingredient name"></input>
+            <input list="ingrUOM" ref={newUOM} placeholder="ingredient unit of measure"></input>
+            <datalist id="ingrUOM">
+                {optionsUOM.length > 0 ? optionsUOM.map(opt => (
+                    <option key={opt} value={opt}>{opt}</option>
+                )) : (<option>none</option>)}
+            </datalist>
+            <button onClick={(e)=> addNewIngredient(e)}>ADD</button>
+            {addRecIng.map(e => (
+                <button key={e.id}>
+                    {e.name} <span onClick={() => removeIngredient(e.id)}>❌</span>
+                </button>
+            ))}
+        </div>
+    );
+}
+
 // Render it!
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<SearchBox />);
+root.render(
+    <div>
+        <SearchBox />
+    </div>
+);
