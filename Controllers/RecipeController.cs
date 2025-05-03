@@ -82,9 +82,9 @@ namespace Kuhinja.Controllers
             await Context.SaveChangesAsync();
             return Ok(ing.Name);
         }
+        [HttpPost]
         [Route("preuzmiRecepte")]
-        [HttpGet]
-        public async Task<ActionResult> preuzmiRecepte([FromQuery] List<string> categories, [FromQuery] List<string> ingredients)
+        public async Task<ActionResult> preuzmiRecepte([FromQuery] List<string> categories, [FromBody] List<IngredientDTO> ingredientAmounts)
         {
             var query = Context.Recipes
                 .Include(r => r.Categories)
@@ -95,9 +95,17 @@ namespace Kuhinja.Controllers
             {                              //kategorije entiteta
                 query = query.Where(r => r.Categories.Where(c=>categories.Contains(c.Name)).Count() == categories.Count());
             }
-            if (ingredients != null && ingredients.Any())
+            if (ingredientAmounts != null && ingredientAmounts.Any())
             {
-                query = query.Where(r => r.RecipeIngredients.Where(ri => ingredients.Contains(ri.Ingredient.Name)).Count() == ingredients.Count());
+                foreach (var ingredient in ingredientAmounts)
+                {
+                    query = query.Where(recipe =>
+                        recipe.RecipeIngredients.Any(ri =>
+                            ri.Ingredient.Name == ingredient.Name &&
+                            ri.Amount <= ingredient.Amount
+                        )
+                    );
+                }
             }
             var result = await query.ToListAsync();
             return Ok(result);

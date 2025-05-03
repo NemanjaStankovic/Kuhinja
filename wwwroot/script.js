@@ -8,6 +8,7 @@ function SearchBox() {
     const [recipes, setRecipes] = useState([]);
     const inputRef = useRef(null);
     const ingrRef = useRef(null);
+    const amountFilterRef = useRef(null);
 
     useEffect(() => {
         preuzmiRecepte(selectedToUrl());
@@ -24,7 +25,14 @@ function SearchBox() {
                 const [categoriesRes, ingredientsRes, recipesRes] = await Promise.all([
                     fetch('https://localhost:7003/Recipe/preuzmiKategorije').then(res => res.json()),
                     fetch('https://localhost:7003/Recipe/preuzmiSastojke').then(res => res.json()),
-                    fetch('https://localhost:7003/Recipe/preuzmiRecepte').then(res => res.json())
+                    fetch('https://localhost:7003/Recipe/preuzmiRecepte', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify([
+                            { name: "secer", amount: 100 },
+                            { name: "voda", amount: 200 }
+                        ])
+                    }).then(res => res.json())
                 ]);
                 
                 setOptions(categoriesRes.map(item => ({ id: item.id, name: item.name })));
@@ -53,7 +61,14 @@ function SearchBox() {
 
     async function preuzmiRecepte(url) {
         try {
-            const response = await fetch('https://localhost:7003/Recipe/preuzmiRecepte' + url);
+            const response = await fetch('https://localhost:7003/Recipe/preuzmiRecepte' + url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify([
+                    { name: "secer", amount: 100 },
+                    { name: "voda", amount: 200 }
+                ])
+            }).then(res => res.json());
             const data = await response.json();
             setRecipes(data);
         } catch (error) {
@@ -100,6 +115,7 @@ function SearchBox() {
                 handleIngredientChange={handleIngredientChange}
                 removeCategory={removeCategory}
                 removeIngredient={removeIngredient}
+                amountFilterRef={amountFilterRef}
             />
             <RecipeList 
                 recipes={recipes}
@@ -122,7 +138,7 @@ function SearchBox() {
     );
 }
 
-function SearchInputs({ options, ingredients, selected, selectedIngredients, inputRef, ingrRef, handleCategoryChange, handleIngredientChange, removeCategory, removeIngredient }) {
+function SearchInputs({ options, ingredients, selected, selectedIngredients, inputRef, ingrRef, handleCategoryChange, handleIngredientChange, removeCategory, removeIngredient, amountFilterRef }) {
     return (
         <div>
             <h1>Find out what you can make!</h1>
@@ -149,6 +165,7 @@ function SearchInputs({ options, ingredients, selected, selectedIngredients, inp
                     <option key={ing.id} value={ing.name}>{ing.name}({ing.unitOfMeassure})</option>
                 )) : (<option>none</option>)}
             </datalist>
+            <input id="ing-amount-you-have" placeholder={`Amount`} ref={amountFilterRef}/>
             <button onClick={(e) => handleIngredientChange(e, null)}>Confirm</button>
 
             {selectedIngredients.map(e => (
