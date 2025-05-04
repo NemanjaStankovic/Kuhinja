@@ -10,6 +10,7 @@ namespace Kuhinja.Models
         [Required]
         [RegularExpression("\\w+")]
         public string Name { get; set; }
+        public string Type { get; set; }
         [JsonIgnore]
         public List<Recipe> Recipes { get; set; }
     }

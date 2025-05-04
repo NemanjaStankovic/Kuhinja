@@ -1,12 +1,18 @@
 ﻿const {useState, useEffect, useRef} = React;
 
 function SearchBox() {
-    const [options, setOptions] = useState([]);
+    const [options, setOptions] = useState({
+        time: [],
+        portions: [],
+        types: []
+      });
     const [ingredients, setIngredients] = useState([]);
     const [selected, setSelected] = useState([]);
     const [selectedIngredients, setSelectedIngredients] = useState([]);
     const [recipes, setRecipes] = useState([]);
-    const inputRef = useRef(null);
+    const inputRef1 = useRef(null);
+    const inputRef2 = useRef(null);
+    const inputRef3 = useRef(null);
     const ingrRef = useRef(null);
     const amountFilterRef = useRef(null);
 
@@ -29,13 +35,11 @@ function SearchBox() {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify([
-                            { name: "secer", amount: 100 },
-                            { name: "voda", amount: 200 }
                         ])
                     }).then(res => res.json())
                 ]);
                 
-                setOptions(categoriesRes.map(item => ({ id: item.id, name: item.name })));
+                setOptions(categoriesRes);//.map(item => ({ id: item.id, name: item.name, type: item.type }))
                 setIngredients(ingredientsRes.map(item => ({ id: item.id, name: item.name, unitOfMeassure: item.unitOfMeassure })));
                 setRecipes(recipesRes);
                 console.log({ categoriesRes, ingredientsRes, recipesRes });
@@ -77,7 +81,6 @@ function SearchBox() {
     }
 
     const handleCategoryChange = (e, itemCtg = null) => {
-        console.log('Category changed');
         const matchedOption = itemCtg || options.find(opt => opt.name === inputRef.current.value);
         if (matchedOption && !selected.some(sel => sel.name === matchedOption.name)) {
             setSelected(prev => [...prev, matchedOption]);
@@ -109,7 +112,9 @@ function SearchBox() {
                 ingredients={ingredients}
                 selected={selected}
                 selectedIngredients={selectedIngredients}
-                inputRef={inputRef}
+                inputRef1={inputRef1}
+                inputRef2={inputRef2}
+                inputRef3={inputRef3}
                 ingrRef={ingrRef}
                 handleCategoryChange={handleCategoryChange}
                 handleIngredientChange={handleIngredientChange}
@@ -138,15 +143,30 @@ function SearchBox() {
     );
 }
 
-function SearchInputs({ options, ingredients, selected, selectedIngredients, inputRef, ingrRef, handleCategoryChange, handleIngredientChange, removeCategory, removeIngredient, amountFilterRef }) {
+function SearchInputs({ options, ingredients, selected, selectedIngredients, inputRef1, inputRef2, inputRef3, ingrRef, handleCategoryChange, handleIngredientChange, removeCategory, removeIngredient, amountFilterRef }) {
     return (
         <div>
             <h1>Find out what you can make!</h1>
             <h3>Choose ingredients you have and its amount and show recepies you can make now!</h3>
             <label htmlFor="searchCat">Choose a category:</label>
-            <input list="searchCat-categories" id="searchCat" name="searchCat" ref={inputRef}/>
-            <datalist id="searchCat-categories">
-                {options.length > 0 ? options.map(ctg => (
+            <label htmlFor="searchCat-time">Vreme spremanja:</label>
+            <input list="searchCat-categories-time" id="searchCat-time" name="searchCat-time" ref={inputRef1}/>
+            <datalist id="searchCat-categories-time">
+                {options.time.length > 0 ? options.time.map(ctg => (
+                    <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
+                )) : (<option>none</option>)}
+            </datalist>
+            <label htmlFor="searchCat-portions">Broj porcija:</label>
+            <input list="searchCat-categories-portions" id="searchCat-portions" name="searchCat-portions" ref={inputRef2}/>
+            <datalist id="searchCat-categories-portions">
+                {options.portions.length > 0 ? options.portions.map(ctg => (
+                    <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
+                )) : (<option>none</option>)}
+            </datalist>
+            <label htmlFor="searchCat-types">Tipovi:</label>
+            <input list="searchCat-categories-types" id="searchCat-types" name="searchCat-types" ref={inputRef3}/>
+            <datalist id="searchCat-categories-types">
+                {options.types.length > 0 ? options.types.map(ctg => (
                     <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
                 )) : (<option>none</option>)}
             </datalist>

@@ -82,9 +82,24 @@ namespace Kuhinja.Controllers
             await Context.SaveChangesAsync();
             return Ok(ing.Name);
         }
+        [Route("dodajKategoriju/{Name}/{Type}")]
+        [HttpPost]
+        public async Task<ActionResult> dodajKategoriju(string Name, string Type)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var cat = new Category
+            {
+                Name = Name,
+                Type = Type,
+            };
+            Context.Categories.Add(cat);
+            await Context.SaveChangesAsync();
+            return Ok(cat.Name);
+        }
         [HttpPost]
         [Route("preuzmiRecepte")]
-        public async Task<ActionResult> preuzmiRecepte([FromQuery] List<string> categories, [FromBody] List<IngredientDTO> ingredientAmounts)
+        public async Task<ActionResult> preuzmiRecepte([FromQuery] List<string> categories, [FromBody] List<IngredientDTO>? ingredientAmounts)
         {
             var query = Context.Recipes
                 .Include(r => r.Categories)
@@ -110,12 +125,20 @@ namespace Kuhinja.Controllers
             var result = await query.ToListAsync();
             return Ok(result);
         }
-        [Route("preuzmiKategorije")]
         [HttpGet]
-        public async Task<ActionResult> preuzmiKategorije()
+        [Route("preuzmiKategorije")]
+        public async Task<ActionResult<CategoriesDTO>> preuzmiKategorije()
         {
-            var categories = await Context.Categories.ToListAsync();
-            return Ok(categories);
+            var allCategories = await Context.Categories.ToListAsync();
+
+            var dto = new CategoriesDTO
+            {
+                Time = allCategories.Where(c => c.Type == "time").ToList(),
+                Portions = allCategories.Where(c => c.Type == "portions").ToList(),
+                Types = allCategories.Where(c => c.Type == "types").ToList()
+            };
+
+            return Ok(dto);
         }
         [Route("preuzmiSastojke")]
         [HttpGet]

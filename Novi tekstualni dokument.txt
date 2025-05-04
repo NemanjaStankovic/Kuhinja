@@ -1,0 +1,6 @@
+3 vrste kategorija
++promena u bazi za kategoriju
++promena u kontroleru
+-promena na frontu
+dodavanje celog recepta
+body kod preuzimanja recepta
