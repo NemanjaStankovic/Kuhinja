@@ -18,6 +18,7 @@ function SearchBox() {
 
     useEffect(() => {
         preuzmiRecepte(selectedToUrl());
+        amountFilterRef.current.value='';
     }, [selected, selectedIngredients]);
     const fetchIngredients = () => {
         fetch('https://localhost:7003/Recipe/preuzmiSastojke')
@@ -57,22 +58,22 @@ function SearchBox() {
             urlExtension += '?' + selected.reduce((acc, curr) => acc + 'categories=' + encodeURIComponent(curr.name) + '&', '').slice(0, -1);
         }
         urlExtension += urlExtension !== '' ? '&' : '?';
-        if (selectedIngredients.length > 0) {
-            urlExtension += selectedIngredients.reduce((acc, curr) => acc + 'ingredients=' + encodeURIComponent(curr.name) + '&', '').slice(0, -1);
-        }
+        // if (selectedIngredients.length > 0) {
+        //     urlExtension += selectedIngredients.reduce((acc, curr) => acc + 'ingredients=' + encodeURIComponent(curr.name) + '&', '').slice(0, -1);
+        // }
         return urlExtension;
     }
 
     async function preuzmiRecepte(url) {
         try {
+            console.log(url);
             const response = await fetch('https://localhost:7003/Recipe/preuzmiRecepte' + url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify([
-                    { name: "secer", amount: 100 },
-                    { name: "voda", amount: 200 }
-                ])
-            }).then(res => res.json());
+                body: JSON.stringify(
+                    selectedIngredients.map(sl =>({"name":sl.name, "amount":sl.amount}))
+                )
+            });
             const data = await response.json();
             setRecipes(data);
         } catch (error) {
@@ -101,9 +102,10 @@ function SearchBox() {
     };
 
     const handleIngredientChange = (e, itemIng = null) => {
-        const matchedOption = itemIng || ingredients.find(opt => opt.name === ingrRef.current.value);
+        const locName = itemIng?itemIng:ingrRef.current.value
+        const matchedOption = ingredients.find(opt => opt.name === locName);
         if (matchedOption && !selectedIngredients.some(sel => sel.name === matchedOption.name)) {
-            setSelectedIngredients(prev => [...prev, matchedOption]);
+            setSelectedIngredients(prev => [...prev, {...matchedOption, amount:(itemIng?9999:amountFilterRef.current.value)}]);
         }
         if (!itemIng) ingrRef.current.value = '';
     };
@@ -114,7 +116,6 @@ function SearchBox() {
 
     const removeIngredient = (id) => {
         setSelectedIngredients(prev => prev.filter(e => e.id !== id));
-        // setTimeout(() => preuzmiRecepte(selectedToUrl()), 0);
     };
 
     return (
@@ -202,7 +203,7 @@ function SearchInputs({ options, ingredients, selected, selectedIngredients, inp
 
             {selectedIngredients.map(e => (
                 <button key={e.id}>
-                    {e.name} <span onClick={() => removeIngredient(e.id)}>❌</span>
+                    {e.name} ({e.amount} {e.unitOfMeassure}) <span onClick={() => removeIngredient(e.id)}>❌</span>
                 </button>
             ))}
         </div>
@@ -222,7 +223,7 @@ function RecipeList({ recipes, options, ingredients, selected, selectedIngredien
                     ))}
                     <h4>Recipe ingredients</h4>
                     {item.recipeIngredients.map(itemIng => (
-                        <button key={itemIng.ingredient.id} onClick={(e)=>handleIngredientChange(e, itemIng.ingredient)}>{itemIng.ingredient.name}</button>
+                        <button key={itemIng.ingredient.id} onClick={(e)=>handleIngredientChange(e, itemIng.ingredient.name)}>{itemIng.ingredient.name}</button>
                     ))}
                 </div>
             ))}
