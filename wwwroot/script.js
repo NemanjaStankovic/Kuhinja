@@ -81,11 +81,23 @@ function SearchBox() {
     }
 
     const handleCategoryChange = (e, itemCtg = null) => {
-        const matchedOption = itemCtg || options.find(opt => opt.name === inputRef.current.value);
-        if (matchedOption && !selected.some(sel => sel.name === matchedOption.name)) {
-            setSelected(prev => [...prev, matchedOption]);
+        const matchedOption1 = itemCtg || options.time.find(opt => opt.name === inputRef1.current.value);
+        if (matchedOption1 && !selected.some(sel => sel.name === matchedOption1.name)) {
+            setSelected(prev => [...prev, matchedOption1]);
         }
-        if (!itemCtg) inputRef.current.value = '';
+        if (!itemCtg) inputRef1.current.value = '';
+
+        const matchedOption2 = itemCtg || options.portions.find(opt => opt.name === inputRef2.current.value);
+        if (matchedOption2 && !selected.some(sel => sel.name === matchedOption2.name)) {
+            setSelected(prev => [...prev, matchedOption2]);
+        }
+        if (!itemCtg) inputRef2.current.value = '';
+
+        const matchedOption3 = itemCtg || options.types.find(opt => opt.name === inputRef3.current.value);
+        if (matchedOption3 && !selected.some(sel => sel.name === matchedOption3.name)) {
+            setSelected(prev => [...prev, matchedOption3]);
+        }
+        if (!itemCtg) inputRef3.current.value = '';
     };
 
     const handleIngredientChange = (e, itemIng = null) => {
