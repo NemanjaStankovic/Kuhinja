@@ -82,6 +82,12 @@ function SearchBox() {
     }
 
     const handleCategoryChange = (e, itemCtg = null) => {
+        
+        if(itemCtg)
+        {
+            setSelected(prev => [...prev, itemCtg]);
+            return
+        }
         const matchedOption1 = itemCtg || options.time.find(opt => opt.name === inputRef1.current.value);
         if (matchedOption1 && !selected.some(sel => sel.name === matchedOption1.name)) {
             setSelected(prev => [...prev, matchedOption1]);
@@ -105,7 +111,7 @@ function SearchBox() {
         const locName = itemIng?itemIng:ingrRef.current.value
         const matchedOption = ingredients.find(opt => opt.name === locName);
         if (matchedOption && !selectedIngredients.some(sel => sel.name === matchedOption.name)) {
-            setSelectedIngredients(prev => [...prev, {...matchedOption, amount:(itemIng?9999:amountFilterRef.current.value)}]);
+            setSelectedIngredients(prev => [...prev, {...matchedOption, amount:(itemIng || amountFilterRef.current.value==''?9999:amountFilterRef.current.value)}]);
         }
         if (!itemIng) ingrRef.current.value = '';
     };
