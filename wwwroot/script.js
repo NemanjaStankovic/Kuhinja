@@ -242,7 +242,11 @@ function AddRecipe({ options, ingredients, selected, selectedIngredients, fetchI
     const [addRecIng, setAddRecIng] = useState([]);
     const addRecCatRef = useRef(null);
     const addRecIngRef = useRef(null);
+    const addRecIngAmountRef = useRef(null);
     const optionsUOM = ["komada", "pakovanje", "kašičica", "kašika", "g(grama)","kg(kilograma)","l(litra)","ml(mililitra)", "prstohvat", "po ukusu"];
+    const inputRef1 = useRef(null);
+    const inputRef2 = useRef(null);
+    const inputRef3 = useRef(null);
     const newIng = useRef(null);
     const newUOM = useRef(null);
     const addNewIngredient = (event) => {
@@ -271,7 +275,7 @@ function AddRecipe({ options, ingredients, selected, selectedIngredients, fetchI
     const handleIngredientChange = (e, itemIng=null) => {
         const matchedOption = itemIng || ingredients.find(opt => opt.name === addRecIngRef.current.value);
         if (matchedOption && !addRecIng.some(sel => sel.name === matchedOption.name)) {
-            setAddRecIng(prev => [...prev, matchedOption]);
+            setAddRecIng(prev => [...prev, {...matchedOption, amount:addRecIngAmountRef.current.value||9999}]);
         }
         if (!itemIng) addRecIngRef.current.value = '';
     }
@@ -284,10 +288,25 @@ function AddRecipe({ options, ingredients, selected, selectedIngredients, fetchI
     return(
         <div>
             <h1>AddRecipe</h1>
-            <label htmlFor="addRecCat">Add Recipe Category:</label>
-            <input list="addRec-categories" id="addRecCat" name="addRecCat" ref={addRecCatRef}/>
-            <datalist id="addRec-categories">
-                {options.length > 0 ? options.map(ctg => (
+            <label htmlFor="searchCat">Choose a category:</label>
+            <label htmlFor="searchCat-time">Vreme spremanja:</label>
+            <input list="searchCat-categories-time" id="searchCat-time" name="searchCat-time" ref={inputRef1}/>
+            <datalist id="searchCat-categories-time">
+                {options.time.length > 0 ? options.time.map(ctg => (
+                    <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
+                )) : (<option>none</option>)}
+            </datalist>
+            <label htmlFor="searchCat-portions">Broj porcija:</label>
+            <input list="searchCat-categories-portions" id="searchCat-portions" name="searchCat-portions" ref={inputRef2}/>
+            <datalist id="searchCat-categories-portions">
+                {options.portions.length > 0 ? options.portions.map(ctg => (
+                    <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
+                )) : (<option>none</option>)}
+            </datalist>
+            <label htmlFor="searchCat-types">Tipovi:</label>
+            <input list="searchCat-categories-types" id="searchCat-types" name="searchCat-types" ref={inputRef3}/>
+            <datalist id="searchCat-categories-types">
+                {options.types.length > 0 ? options.types.map(ctg => (
                     <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
                 )) : (<option>none</option>)}
             </datalist>
@@ -305,8 +324,9 @@ function AddRecipe({ options, ingredients, selected, selectedIngredients, fetchI
                     <option key={ing.id} value={ing.name}>{ing.name}({ing.unitOfMeassure})</option>
                 )) : (<option>none</option>)}
             </datalist>
-            <input id="addRec-ingredients-amount" placeholder={`Amount`}/>
+            <input id="addRec-ingredients-amount" placeholder={`Amount`} ref={addRecIngAmountRef}/>
             <button onClick={(e) => handleIngredientChange(e, null)}>Confirm</button>
+
             <label>Ingredient doesnt exist? Add it!</label>
             <input ref={newIng} placeholder="ingredient name"></input>
             <input list="ingrUOM" ref={newUOM} placeholder="ingredient unit of measure"></input>
@@ -316,9 +336,10 @@ function AddRecipe({ options, ingredients, selected, selectedIngredients, fetchI
                 )) : (<option>none</option>)}
             </datalist>
             <button onClick={(e)=> addNewIngredient(e)}>ADD</button>
+
             {addRecIng.map(e => (
                 <button key={e.id}>
-                    {e.name} <span onClick={() => removeIngredient(e.id)}>❌</span>
+                    {e.name} ({e.amount} {e.unitOfMeassure})<span onClick={() => removeIngredient(e.id)}>❌</span>
                 </button>
             ))}
         </div>
