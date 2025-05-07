@@ -240,7 +240,6 @@ function RecipeList({ recipes, options, ingredients, selected, selectedIngredien
 function AddRecipe({ options, ingredients, selected, selectedIngredients, fetchIngredients }){
     const [addRecCat, setAddRecCat] = useState([]);
     const [addRecIng, setAddRecIng] = useState([]);
-    const addRecCatRef = useRef(null);
     const addRecIngRef = useRef(null);
     const addRecIngAmountRef = useRef(null);
     const optionsUOM = ["komada", "pakovanje", "kašičica", "kašika", "g(grama)","kg(kilograma)","l(litra)","ml(mililitra)", "prstohvat", "po ukusu"];
@@ -249,6 +248,11 @@ function AddRecipe({ options, ingredients, selected, selectedIngredients, fetchI
     const inputRef3 = useRef(null);
     const newIng = useRef(null);
     const newUOM = useRef(null);
+
+    useEffect(() => {
+        console.log(addRecCat);
+    }, [addRecCat]);
+
     const addNewIngredient = (event) => {
         fetch('https://localhost:7003/Recipe/dodajSastojak/'+newIng.current.value+'/'+newUOM.current.value, {
             method: 'POST'
@@ -265,12 +269,30 @@ function AddRecipe({ options, ingredients, selected, selectedIngredients, fetchI
           })
           .catch(err=>console.error(err));
     };
-    const handleCategoryChange = (e, itemCtg=null) => {
-        const matchedOption = itemCtg || options.find(opt => opt.name === addRecCatRef.current.value);
-        if (matchedOption && !addRecCat.some(sel => sel.name === matchedOption.name)) {
-            setAddRecCat(prev => [...prev, matchedOption]);
+    const handleCategoryChange = (e) => {
+        const matchedOption1 = options.time.find(opt => opt.name === inputRef1.current.value);
+        if(matchedOption1){
+            setAddRecCat(prev => {
+                const filtered = prev.filter(cat=>cat.type != matchedOption1.type);
+                return [...filtered, matchedOption1];
+            });
         }
-        if (!itemCtg) addRecCatRef.current.value = '';
+        inputRef1.current.value = '';
+
+        const matchedOption2 = options.portions.find(opt => opt.name === inputRef2.current.value);
+        if(matchedOption2){
+            setAddRecCat(prev => {
+                const filtered = prev.filter(cat=>cat.type != matchedOption2.type);
+                return [...filtered, matchedOption2];
+            });
+        }
+        inputRef2.current.value = '';
+
+        const matchedOption3 = options.types.find(opt => opt.name === inputRef3.current.value);
+        if (matchedOption3 && !addRecCat.some(sel => sel.name === matchedOption3.name)) {
+            setAddRecCat(prev => [...prev, matchedOption3]);
+        }
+        inputRef3.current.value = '';
     }
     const handleIngredientChange = (e, itemIng=null) => {
         const matchedOption = itemIng || ingredients.find(opt => opt.name === addRecIngRef.current.value);
@@ -288,60 +310,74 @@ function AddRecipe({ options, ingredients, selected, selectedIngredients, fetchI
     return(
         <div>
             <h1>AddRecipe</h1>
-            <label htmlFor="searchCat">Choose a category:</label>
-            <label htmlFor="searchCat-time">Vreme spremanja:</label>
-            <input list="searchCat-categories-time" id="searchCat-time" name="searchCat-time" ref={inputRef1}/>
-            <datalist id="searchCat-categories-time">
-                {options.time.length > 0 ? options.time.map(ctg => (
-                    <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
-                )) : (<option>none</option>)}
-            </datalist>
-            <label htmlFor="searchCat-portions">Broj porcija:</label>
-            <input list="searchCat-categories-portions" id="searchCat-portions" name="searchCat-portions" ref={inputRef2}/>
-            <datalist id="searchCat-categories-portions">
-                {options.portions.length > 0 ? options.portions.map(ctg => (
-                    <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
-                )) : (<option>none</option>)}
-            </datalist>
-            <label htmlFor="searchCat-types">Tipovi:</label>
-            <input list="searchCat-categories-types" id="searchCat-types" name="searchCat-types" ref={inputRef3}/>
-            <datalist id="searchCat-categories-types">
-                {options.types.length > 0 ? options.types.map(ctg => (
-                    <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
-                )) : (<option>none</option>)}
-            </datalist>
-            <button onClick={(e) => handleCategoryChange(e, null)}>Confirm</button>
+            <form id="addrecipe" encType="multipart/form-data">
+                <label htmlFor="title">Title:</label>
+                <input type="text" id="title" name="title" required></input><br></br>
 
-            {addRecCat.map(e => (
-                <button key={e.id}>
-                    {e.name} <span onClick={() => removeCategory(e.id)}>❌</span>
-                </button>
-            ))}
-            <label htmlFor="addRecIng">Add Recipe Ingredient:</label>
-            <input list="addRec-ingredients" id="addRecIng" name="addRecIng" ref={addRecIngRef}/>
-            <datalist id="addRec-ingredients">
-                {ingredients.length > 0 ? ingredients.map(ing => (
-                    <option key={ing.id} value={ing.name}>{ing.name}({ing.unitOfMeassure})</option>
-                )) : (<option>none</option>)}
-            </datalist>
-            <input id="addRec-ingredients-amount" placeholder={`Amount`} ref={addRecIngAmountRef}/>
-            <button onClick={(e) => handleIngredientChange(e, null)}>Confirm</button>
+                <label htmlFor="instructions">Instructions:</label><br></br>
+                <textarea id="instructions" name="instructions" rows="5" cols="40" required></textarea><br></br>
 
-            <label>Ingredient doesnt exist? Add it!</label>
-            <input ref={newIng} placeholder="ingredient name"></input>
-            <input list="ingrUOM" ref={newUOM} placeholder="ingredient unit of measure"></input>
-            <datalist id="ingrUOM">
-                {optionsUOM.length > 0 ? optionsUOM.map(opt => (
-                    <option key={opt} value={opt}>{opt}</option>
-                )) : (<option>none</option>)}
-            </datalist>
-            <button onClick={(e)=> addNewIngredient(e)}>ADD</button>
+                <label htmlFor="image">Upload Image:</label>
+                <input type="file" id="image" name="image" accept="image/*" required></input><br></br>
 
-            {addRecIng.map(e => (
-                <button key={e.id}>
-                    {e.name} ({e.amount} {e.unitOfMeassure})<span onClick={() => removeIngredient(e.id)}>❌</span>
-                </button>
-            ))}
+                <label htmlFor="searchCat">Choose a category:</label>
+                <label htmlFor="searchCat-time">Vreme spremanja:</label>
+                <input list="searchCat-categories-time" id="searchCat-time" name="searchCat-time" ref={inputRef1}/>
+                <datalist id="searchCat-categories-time">
+                    {options.time.length > 0 ? options.time.map(ctg => (
+                        <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
+                    )) : (<option>none</option>)}
+                </datalist>
+                <label htmlFor="searchCat-portions">Broj porcija:</label>
+                <input list="searchCat-categories-portions" id="searchCat-portions" name="searchCat-portions" ref={inputRef2}/>
+                <datalist id="searchCat-categories-portions">
+                    {options.portions.length > 0 ? options.portions.map(ctg => (
+                        <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
+                    )) : (<option>none</option>)}
+                </datalist>
+                <label htmlFor="searchCat-types">Tipovi:</label>
+                <input list="searchCat-categories-types" id="searchCat-types" name="searchCat-types" ref={inputRef3}/>
+                <datalist id="searchCat-categories-types">
+                    {options.types.length > 0 ? options.types.map(ctg => (
+                        <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
+                    )) : (<option>none</option>)}
+                </datalist>
+                <button type="button" onClick={(e) => handleCategoryChange(e)}>Confirm</button><br></br>
+
+                {addRecCat.map(e => (
+                    <button key={e.id}>
+                        {e.name} <span onClick={() => removeCategory(e.id)}>❌</span>
+                    </button>
+                ))}
+                <br></br>
+                <label htmlFor="addRecIng">Add Recipe Ingredient:</label>
+                <input list="addRec-ingredients" id="addRecIng" name="addRecIng" ref={addRecIngRef}/>
+                <datalist id="addRec-ingredients">
+                    {ingredients.length > 0 ? ingredients.map(ing => (
+                        <option key={ing.id} value={ing.name}>{ing.name}({ing.unitOfMeassure})</option>
+                    )) : (<option>none</option>)}
+                </datalist>
+                <input id="addRec-ingredients-amount" placeholder={`Amount`} ref={addRecIngAmountRef}/>
+                <button type="button" onClick={(e) => handleIngredientChange(e, null)}>Confirm</button><br></br>
+
+                <label>Ingredient doesnt exist? Add it!</label>
+                <input ref={newIng} placeholder="ingredient name"></input>
+                <input list="ingrUOM" ref={newUOM} placeholder="ingredient unit of measure"></input>
+                <datalist id="ingrUOM">
+                    {optionsUOM.length > 0 ? optionsUOM.map(opt => (
+                        <option key={opt} value={opt}>{opt}</option>
+                    )) : (<option>none</option>)}
+                </datalist>
+                <button type="button" onClick={(e)=> addNewIngredient(e)}>ADD</button><br></br>
+
+                {addRecIng.map(e => (
+                    <button key={e.id}>
+                        {e.name} ({e.amount} {e.unitOfMeassure})<span onClick={() => removeIngredient(e.id)}>❌</span>
+                    </button>
+                ))}
+                <br></br>
+                <button type="submit">Submit</button>
+            </form>
         </div>
     );
 }
