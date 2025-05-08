@@ -246,6 +246,9 @@ function AddRecipe({ options, ingredients, selected, selectedIngredients, fetchI
     const inputRef1 = useRef(null);
     const inputRef2 = useRef(null);
     const inputRef3 = useRef(null);
+    const addRecTitleRef = useRef(null);
+    const addRecInstRef = useRef(null);
+    const addRecImgRef = useRef(null);
     const newIng = useRef(null);
     const newUOM = useRef(null);
 
@@ -307,18 +310,95 @@ function AddRecipe({ options, ingredients, selected, selectedIngredients, fetchI
     const removeIngredient = (id) => {
         setAddRecIng(prev => prev.filter(e => e.id !== id));
     };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const title = addRecTitleRef.current.value.trim();
+        const instructions = addRecInstRef.current.value.trim();
+        const fileInput = addRecImgRef.current;
+        const file = fileInput && fileInput.files && fileInput.files[0];
+        if (!file) {
+            alert("No image selected!");
+            return;
+        }
+
+        if(!title) {
+            alert("Title is required.");
+            return;
+        }
+
+        if(!instructions) {
+            alert("Instructions are required.");
+            return;
+        }
+
+        if(addRecIng.length === 0) {
+            alert("Please add at least one ingredient.");
+            return;
+        }
+
+        for(let ing of addRecIng) {
+            if (!ing.amount || isNaN(ing.amount) || Number(ing.amount) <= 0) {
+                alert(`Invalid amount of ingredient: ${ing.name}`);
+                return;
+            }
+        }
+
+        if(addRecCat.length === 0) {
+            alert("Please add at least one category.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("title", addRecTitleRef.current.value);
+        formData.append("instuctions", addRecInstRef.current.value);
+        formData.append("image", file);
+        console.log(addRecIng, addRecCat);
+        addRecIng.forEach(ing => {
+            formData.append("ingredients", JSON.stringify({
+                id: ing.id,
+                name: ing.name,
+                amount: ing.amount
+            }));
+        });
+
+        addRecCat.forEach(cat => {
+            formData.append("categories", JSON.stringify({
+                id:cat.id,
+                name: cat.name
+            }))
+        })
+
+        try{
+            const res = await fetch("", {
+                method: "POST",
+                body: formData
+            });
+
+            if(!res.ok) {
+                throw new Error("Failed to submit recipe");
+            }
+        const data = await res.json();
+        console.log("Recipe submitted!", data);
+        alert("Recipe added successfully!");
+        // Optionally: clear form or navigate
+        } catch (err) {
+            console.error(err.message);
+            alert("Something went wrong while submitting.");
+        }
+    }
     return(
         <div>
             <h1>AddRecipe</h1>
-            <form id="addrecipe" encType="multipart/form-data">
+            <form id="addrecipe" encType="multipart/form-data" onSubmit={handleSubmit}>
                 <label htmlFor="title">Title:</label>
-                <input type="text" id="title" name="title" required></input><br></br>
+                <input type="text" id="title" name="title" ref={addRecTitleRef} required></input><br></br>
 
                 <label htmlFor="instructions">Instructions:</label><br></br>
-                <textarea id="instructions" name="instructions" rows="5" cols="40" required></textarea><br></br>
+                <textarea id="instructions" name="instructions" rows="5" cols="40" ref={addRecInstRef} required></textarea><br></br>
 
                 <label htmlFor="image">Upload Image:</label>
-                <input type="file" id="image" name="image" accept="image/*" required></input><br></br>
+                <input type="file" id="image" name="image" accept="image/*" ref={addRecImgRef} required></input><br></br>
 
                 <label htmlFor="searchCat">Choose a category:</label>
                 <label htmlFor="searchCat-time">Vreme spremanja:</label>

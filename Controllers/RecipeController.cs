@@ -1,4 +1,5 @@
-﻿using Humanizer;
+﻿using System.Text.Json;
+using Humanizer;
 using Kuhinja.DTOs;
 using Kuhinja.Models;
 using Microsoft.AspNetCore.Http;
@@ -17,55 +18,111 @@ namespace Kuhinja.Controllers
             Context = context;
         }
 
-        [Route("dodajRecept/{ingredients}/{categories}/{email}")]
+        // [Route("dodajRecept/{ingredients}/{categories}/{email}")]
+        // [HttpPost]
+        // public async Task<ActionResult> dodajRecept([FromBody] RecipeDTO recipeDTO, string ingredients, string categories, string measurements, string email)
+        // {
+        //     if (!ModelState.IsValid)
+        //         return BadRequest(ModelState);
+
+        //     var parsedMeasurements = measurements.Split(',').Select(p=>p.Trim()).ToList();
+
+        //     var parsedIngredients = ingredients.Split(',').Select(p => p.Trim()).ToList();
+        //     var allIngredients= await Context.Ingredients.Where(e => parsedIngredients.Contains(e.Name)).ToListAsync();
+        //     // var nonExistingIngredients = parsedIngredients.Where(p => !existingIngredients.Any(c => c.Name == p)).Select(p => new Ingredient { Name = p }).ToList();
+        //     //Context.Ingredients.AddRange(nonExistingIngredients);
+        //     // var allIngredients = nonExistingIngredients.Concat(existingIngredients).ToList();
+
+        //     var parsedCategories = categories.Split(',').Select(p => p.Trim()).ToList();
+        //     var existingCategories = await Context.Categories.Where(e=> parsedCategories.Contains(e.Name)).ToListAsync();
+        //     var nonExistingCategories = parsedCategories.Where(p => !existingCategories.Any(c => c.Name == p)).Select(p => new Category { Name = p }).ToList();
+        //     Context.Categories.AddRange(nonExistingCategories);
+        //     var allCategories = nonExistingCategories.Concat(existingCategories).ToList();
+
+        //     var user = await Context.Users.Where(p => p.Email == email).FirstOrDefaultAsync();
+        //     var recipe = new Recipe
+        //     {
+        //         Title = recipeDTO.Title,
+        //         Instructions = recipeDTO.Instructions,
+        //         ImageUrl = recipeDTO.ImageUrl,
+        //         User = user,
+        //         Categories = allCategories,
+        //         Created_at = DateTime.Now
+        //     };
+        //     Context.Recipes.Add(recipe);
+        //     await Context.SaveChangesAsync();
+        //     for(int i=0; i< parsedIngredients.Count; i++)
+        //     {
+        //         double.TryParse(parsedMeasurements[i], out double result);
+
+        //         var recIng = new RecipeIngredients
+        //         {
+        //             Recipe = recipe,
+        //             RecipeId = recipe.Id,
+        //             Amount = result,
+        //             Ingredient = allIngredients[i],
+        //             IngredientId = allIngredients[i].Id,
+        //         };
+        //         Context.RecipeIngredients.Add(recIng);
+        //     }
+        //     await Context.SaveChangesAsync();
+        //     return Ok(recipe.Title);
+        // }
+        [Route("dodajRecept")]
         [HttpPost]
-        public async Task<ActionResult> dodajRecept([FromBody] RecipeDTO recipeDTO, string ingredients, string categories, string measurements, string email)
+        public async Task<IActionResult> dodajRecept(
+            [FromForm] string title,
+            [FromForm] string Instructions,
+            [FromForm] IFormFile image,
+            [FromForm] List<string> categories,
+            [FromForm] List<string> ingredients
+        )
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var parsedIngredients = new List<IngredientDTO>();
+            var parsedCategories = new List<Category>();
+            foreach (var ingStr in ingredients)
+            {
+                try{
+                    var ing = JsonSerializer.Deserialize<IngredientDTO>(ingStr);
+                    if (ing != null)
+                        parsedIngredients.Add(ing);
+                }
+                catch
+                {
+                    return BadRequest("Invalid ingredient format.");
+                }                
+            }
+            foreach(var catStr in categories)
+            {
+                try{
+                    var cat = JsonSerializer.Deserialize<Category>(catStr);
+                    if(cat != null)
+                        parsedCategories.Add(cat);
+                }
+                catch
+                {
+                    return BadRequest("Invalid category format.");
+                }
+            }
 
-            var parsedMeasurements = measurements.Split(',').Select(p=>p.Trim()).ToList();
+            //img
+            var imagePath = Path.Combine("wwwroot/images", image.FileName);
+            using (var stream = new FileStream(imagePath, FileMode.Create))
+            {
+                await image.CopyToAsync(stream);
+            }
+            var imageUrl = Path.Combine("/images", image.FileName).Replace("\\", "/"); // Use forward slashes
 
-            var parsedIngredients = ingredients.Split(',').Select(p => p.Trim()).ToList();
-            var allIngredients= await Context.Ingredients.Where(e => parsedIngredients.Contains(e.Name)).ToListAsync();
-            // var nonExistingIngredients = parsedIngredients.Where(p => !existingIngredients.Any(c => c.Name == p)).Select(p => new Ingredient { Name = p }).ToList();
-            //Context.Ingredients.AddRange(nonExistingIngredients);
-            // var allIngredients = nonExistingIngredients.Concat(existingIngredients).ToList();
-
-            var parsedCategories = categories.Split(',').Select(p => p.Trim()).ToList();
-            var existingCategories = await Context.Categories.Where(e=> parsedCategories.Contains(e.Name)).ToListAsync();
-            var nonExistingCategories = parsedCategories.Where(p => !existingCategories.Any(c => c.Name == p)).Select(p => new Category { Name = p }).ToList();
-            Context.Categories.AddRange(nonExistingCategories);
-            var allCategories = nonExistingCategories.Concat(existingCategories).ToList();
-
-            var user = await Context.Users.Where(p => p.Email == email).FirstOrDefaultAsync();
             var recipe = new Recipe
             {
-                Title = recipeDTO.Title,
-                Instructions = recipeDTO.Instructions,
-                ImageUrl = recipeDTO.ImageUrl,
-                User = user,
-                Categories = allCategories,
-                Created_at = DateTime.Now
-            };
-            Context.Recipes.Add(recipe);
-            await Context.SaveChangesAsync();
-            for(int i=0; i< parsedIngredients.Count; i++)
-            {
-                double.TryParse(parsedMeasurements[i], out double result);
-
-                var recIng = new RecipeIngredients
-                {
-                    Recipe = recipe,
-                    RecipeId = recipe.Id,
-                    Amount = result,
-                    Ingredient = allIngredients[i],
-                    IngredientId = allIngredients[i].Id,
-                };
-                Context.RecipeIngredients.Add(recIng);
+                Title = title,
+                Instructions = Instructions,
+                ImageUrl = imageUrl,
+                
             }
-            await Context.SaveChangesAsync();
-            return Ok(recipe.Title);
+
+
+            return Ok(new {success=true, message="Recipe uploaded sucessfully."});
         }
         [Route("dodajSastojak/{Name}/{unitOfM}")]
         [HttpPost]
