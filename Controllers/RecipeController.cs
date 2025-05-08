@@ -17,66 +17,14 @@ namespace Kuhinja.Controllers
         {
             Context = context;
         }
-
-        // [Route("dodajRecept/{ingredients}/{categories}/{email}")]
-        // [HttpPost]
-        // public async Task<ActionResult> dodajRecept([FromBody] RecipeDTO recipeDTO, string ingredients, string categories, string measurements, string email)
-        // {
-        //     if (!ModelState.IsValid)
-        //         return BadRequest(ModelState);
-
-        //     var parsedMeasurements = measurements.Split(',').Select(p=>p.Trim()).ToList();
-
-        //     var parsedIngredients = ingredients.Split(',').Select(p => p.Trim()).ToList();
-        //     var allIngredients= await Context.Ingredients.Where(e => parsedIngredients.Contains(e.Name)).ToListAsync();
-        //     // var nonExistingIngredients = parsedIngredients.Where(p => !existingIngredients.Any(c => c.Name == p)).Select(p => new Ingredient { Name = p }).ToList();
-        //     //Context.Ingredients.AddRange(nonExistingIngredients);
-        //     // var allIngredients = nonExistingIngredients.Concat(existingIngredients).ToList();
-
-        //     var parsedCategories = categories.Split(',').Select(p => p.Trim()).ToList();
-        //     var existingCategories = await Context.Categories.Where(e=> parsedCategories.Contains(e.Name)).ToListAsync();
-        //     var nonExistingCategories = parsedCategories.Where(p => !existingCategories.Any(c => c.Name == p)).Select(p => new Category { Name = p }).ToList();
-        //     Context.Categories.AddRange(nonExistingCategories);
-        //     var allCategories = nonExistingCategories.Concat(existingCategories).ToList();
-
-        //     var user = await Context.Users.Where(p => p.Email == email).FirstOrDefaultAsync();
-        //     var recipe = new Recipe
-        //     {
-        //         Title = recipeDTO.Title,
-        //         Instructions = recipeDTO.Instructions,
-        //         ImageUrl = recipeDTO.ImageUrl,
-        //         User = user,
-        //         Categories = allCategories,
-        //         Created_at = DateTime.Now
-        //     };
-        //     Context.Recipes.Add(recipe);
-        //     await Context.SaveChangesAsync();
-        //     for(int i=0; i< parsedIngredients.Count; i++)
-        //     {
-        //         double.TryParse(parsedMeasurements[i], out double result);
-
-        //         var recIng = new RecipeIngredients
-        //         {
-        //             Recipe = recipe,
-        //             RecipeId = recipe.Id,
-        //             Amount = result,
-        //             Ingredient = allIngredients[i],
-        //             IngredientId = allIngredients[i].Id,
-        //         };
-        //         Context.RecipeIngredients.Add(recIng);
-        //     }
-        //     await Context.SaveChangesAsync();
-        //     return Ok(recipe.Title);
-        // }
         [Route("dodajRecept")]
         [HttpPost]
         public async Task<IActionResult> dodajRecept(
             [FromForm] string title,
-            [FromForm] string Instructions,
+            [FromForm] string instructions,
             [FromForm] IFormFile image,
             [FromForm] List<string> categories,
-            [FromForm] List<string> ingredients
-        )
+            [FromForm] List<string> ingredients)
         {
             var parsedIngredients = new List<IngredientDTO>();
             var parsedCategories = new List<Category>();
@@ -94,15 +42,20 @@ namespace Kuhinja.Controllers
             }
             foreach(var catStr in categories)
             {
-                try{
-                    var cat = JsonSerializer.Deserialize<Category>(catStr);
-                    if(cat != null)
+                var catDTO = JsonSerializer.Deserialize<CategoryDTO>(catStr);
+                try
+                {
+                    var cat = await Context.Categories.Where(ct => ct.Name == catDTO.Name).FirstOrDefaultAsync();
+                    if (cat != null)
+                    {
                         parsedCategories.Add(cat);
+                    }
                 }
                 catch
                 {
                     return BadRequest("Invalid category format.");
                 }
+                
             }
 
             //img
@@ -116,12 +69,31 @@ namespace Kuhinja.Controllers
             var recipe = new Recipe
             {
                 Title = title,
-                Instructions = Instructions,
+                Instructions = instructions,
                 ImageUrl = imageUrl,
-                
+                UserId = 1,
+                Categories = parsedCategories,
+                Created_at = DateTime.Now
+            };
+            Context.Recipes.Add(recipe);
+            await Context.SaveChangesAsync();
+            foreach(var ri in parsedIngredients)
+            {
+                var ing = await Context.Ingredients.Where(el=>ri.Name==el.Name).FirstOrDefaultAsync();
+                if(ing!=null)
+                {
+                   var recIng = new RecipeIngredients
+                    {
+                        Recipe = recipe,
+                        RecipeId = recipe.Id,
+                        Amount = ri.Amount,
+                        Ingredient = ing,
+                        IngredientId = ing.Id,
+                    };
+                    Context.RecipeIngredients.Add(recIng); 
+                }
             }
-
-
+            await Context.SaveChangesAsync();
             return Ok(new {success=true, message="Recipe uploaded sucessfully."});
         }
         [Route("dodajSastojak/{Name}/{unitOfM}")]

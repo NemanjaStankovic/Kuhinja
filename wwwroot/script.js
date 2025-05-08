@@ -217,6 +217,7 @@ function SearchInputs({ options, ingredients, selected, selectedIngredients, inp
 }
 
 function RecipeList({ recipes, options, ingredients, selected, selectedIngredients, handleCategoryChange, handleIngredientChange, removeCategory, removeIngredient}) {
+    console.log(recipes);
     return (
         <div>
             {recipes.map(item => (
@@ -224,6 +225,7 @@ function RecipeList({ recipes, options, ingredients, selected, selectedIngredien
                     <h1>{item.title}</h1>
                     <h3>{item.instructions}</h3>
                     <h4>Recipe categories</h4>
+                    <img src={item.imageUrl} alt={`Recipe image ${item.id}`} key={item.id} /><br></br>
                     {item.categories.map(itemCtg => (
                         <button key={itemCtg.id} onClick={(e)=>handleCategoryChange(e, itemCtg)}>{itemCtg.name}</button>
                     ))}
@@ -351,26 +353,26 @@ function AddRecipe({ options, ingredients, selected, selectedIngredients, fetchI
 
         const formData = new FormData();
         formData.append("title", addRecTitleRef.current.value);
-        formData.append("instuctions", addRecInstRef.current.value);
+        formData.append("instructions", addRecInstRef.current.value);
         formData.append("image", file);
         console.log(addRecIng, addRecCat);
         addRecIng.forEach(ing => {
             formData.append("ingredients", JSON.stringify({
-                id: ing.id,
-                name: ing.name,
-                amount: ing.amount
+                Id: ing.id,
+                Name: ing.name,
+                Amount: parseFloat(ing.amount)
             }));
         });
 
         addRecCat.forEach(cat => {
             formData.append("categories", JSON.stringify({
-                id:cat.id,
-                name: cat.name
+                Id:cat.id,
+                Name: cat.name
             }))
         })
 
         try{
-            const res = await fetch("", {
+            const res = await fetch('https://localhost:7003/Recipe/dodajRecept', {
                 method: "POST",
                 body: formData
             });
