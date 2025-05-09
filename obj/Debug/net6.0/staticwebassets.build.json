@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Ovd/7+b3n/NxnmCKBYCNf1uwhojHbDMaSoZSl2jE2sQ=",
+  "Hash": "fTh0g10LeNcgp9Ca5SgZEDVXrhHsPnsUoYE9eElciaI=",
   "Source": "Kuhinja",
   "BasePath": "_content/Kuhinja",
   "Mode": "Default",
@@ -32,6 +32,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\images.jfif"
+    },
+    {
+      "Identity": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\images\\r6g3v504h9se1.png",
+      "SourceId": "Kuhinja",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\",
+      "BasePath": "_content/Kuhinja",
+      "RelativePath": "images/r6g3v504h9se1.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\r6g3v504h9se1.png"
     },
     {
       "Identity": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\index.html",

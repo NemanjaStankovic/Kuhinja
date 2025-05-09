@@ -225,7 +225,7 @@ function RecipeList({ recipes, options, ingredients, selected, selectedIngredien
                     <h1>{item.title}</h1>
                     <h3>{item.instructions}</h3>
                     <h4>Recipe categories</h4>
-                    <img src={item.imageUrl} alt={`Recipe image ${item.id}`} key={item.id} /><br></br>
+                    <img src={item.imageUrl} alt={`Recipe image ${item.id}`} key={item.id} className="recipe-img"/><br></br>
                     {item.categories.map(itemCtg => (
                         <button key={itemCtg.id} onClick={(e)=>handleCategoryChange(e, itemCtg)}>{itemCtg.name}</button>
                     ))}
