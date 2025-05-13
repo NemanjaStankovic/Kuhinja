@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "fTh0g10LeNcgp9Ca5SgZEDVXrhHsPnsUoYE9eElciaI=",
+  "Hash": "DUaC74gX4MK76rsm22hrEkwLLtoU/8wwKeeaW4Zt83o=",
   "Source": "Kuhinja",
   "BasePath": "_content/Kuhinja",
   "Mode": "Default",
@@ -83,6 +83,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\script.js"
+    },
+    {
+      "Identity": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\styles.css",
+      "SourceId": "Kuhinja",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\",
+      "BasePath": "_content/Kuhinja",
+      "RelativePath": "styles.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\styles.css"
     }
   ]
 }
