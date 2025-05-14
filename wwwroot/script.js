@@ -167,37 +167,28 @@ function SearchInputs({ options, ingredients, selected, selectedIngredients, inp
         <div class="bg-blue-500">
             <h1 class="text-red-500 text-5xl font-medium text-center" style={{ fontFamily: 'Patrick Hand, cursive' }}>Find out what you can make!</h1>
             <h3 class="text-xl overline text-center pb-4" style={{ fontFamily: 'Patrick Hand, cursive' }}>Choose ingredients you have and its amount and show recepies you can make now!</h3>
-            <div class="flex justify-stretch p-4 rounded max-w-9/10 flex-wrap bg-blue-200 ">
-                <div>
-                    <label htmlFor="searchCat">Choose a category:</label>
-                    <div>
-                        <label htmlFor="searchCat-time">Vreme spremanja:</label><br></br>
-                        <input list="searchCat-categories-time" id="searchCat-time" name="searchCat-time" ref={inputRef1}/>
-                        <datalist id="searchCat-categories-time">
-                            {options.time.length > 0 ? options.time.map(ctg => (
-                                <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
-                            )) : (<option>none</option>)}
-                        </datalist>
-                    </div>
-                    <div>
-                        <label htmlFor="searchCat-portions">Broj porcija:</label><br></br>
-                        <input list="searchCat-categories-portions" id="searchCat-portions" name="searchCat-portions" ref={inputRef2}/>
-                        <datalist id="searchCat-categories-portions">
-                            {options.portions.length > 0 ? options.portions.map(ctg => (
-                                <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
-                            )) : (<option>none</option>)}
-                        </datalist>
-                    </div>
-                    <div>
-                        <label htmlFor="searchCat-types">Tipovi:</label><br></br>
-                        <input list="searchCat-categories-types" id="searchCat-types" name="searchCat-types" ref={inputRef3}/>
-                        <datalist id="searchCat-categories-types">
-                            {options.types.length > 0 ? options.types.map(ctg => (
-                                <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
-                            )) : (<option>none</option>)}
-                        </datalist>
-                    </div>
-                    <button onClick={(e) => handleCategoryChange(e, null)}>Confirm</button>
+            <div class="max-w-xl mx-auto p-6 bg-white/20 rounded-2xl shadow-md space-y-6">
+                <div class="shadow rounded p-2">
+                    <label htmlFor="searchCat">Choose a category:</label><br></br>
+                    <input class="rounded text-white border border-lime-500 border-2 m-2" list="searchCat-categories-time" id="searchCat-time" name="searchCat-time" ref={inputRef1} placeholder={`Vreme spremanja`}/>
+                    <datalist id="searchCat-categories-time">
+                        {options.time.length > 0 ? options.time.map(ctg => (
+                            <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
+                        )) : (<option>none</option>)}
+                    </datalist>
+                    <input class="rounded text-white border border-lime-500 border-2 m-2" list="searchCat-categories-portions" id="searchCat-portions" name="searchCat-portions" ref={inputRef2} placeholder={`Broj porcija`}/>
+                    <datalist id="searchCat-categories-portions">
+                        {options.portions.length > 0 ? options.portions.map(ctg => (
+                            <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
+                        )) : (<option>none</option>)}
+                    </datalist>
+                    <input class="rounded text-white border border-lime-500 border-2 m-2" list="searchCat-categories-types" id="searchCat-types" name="searchCat-types" ref={inputRef3} placeholder={`Tipovi`}/>
+                    <datalist id="searchCat-categories-types">
+                        {options.types.length > 0 ? options.types.map(ctg => (
+                            <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
+                        )) : (<option>none</option>)}
+                    </datalist>
+                    <button class="bg-lime-500 px-2 rounded text-lime-100" onClick={(e) => handleCategoryChange(e, null)}>Confirm</button>
 
                     {selected.map(e => (
                         <button key={e.id}>
@@ -205,18 +196,18 @@ function SearchInputs({ options, ingredients, selected, selectedIngredients, inp
                         </button>
                     ))}
                 </div>
-                <div>
+                <div class="shadow rounded p-2">
                     <label htmlFor="searchIng">Choose an ingredient:</label>
                     <div>
-                        <input list="searchIng-ingredients" id="searchIng" name="searchIng" ref={ingrRef}/><br></br>
+                        <input class="rounded text-white border border-lime-500 border-2 m-2" list="searchIng-ingredients" id="searchIng" name="searchIng" ref={ingrRef} placeholder={`Sastojak`}/>
                         <datalist id="searchIng-ingredients">
                             {ingredients.length > 0 ? ingredients.map(ing => (
                                 <option key={ing.id} value={ing.name}>{ing.name}({ing.unitOfMeassure})</option>
                             )) : (<option>none</option>)}
                         </datalist>
-                        <input id="ing-amount-you-have" placeholder={`Amount`} ref={amountFilterRef}/>
+                        <input class="rounded text-white border border-lime-500 border-2 m-2" id="ing-amount-you-have" placeholder={`Kolicina`} ref={amountFilterRef}/>
                     </div>
-                    <button onClick={(e) => handleIngredientChange(e, null)}>Confirm</button>
+                    <button class="bg-lime-500 px-2 rounded text-lime-100 m-2" onClick={(e) => handleIngredientChange(e, null)}>Confirm</button>
 
                     {selectedIngredients.map(e => (
                         <button key={e.id}>
