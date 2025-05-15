@@ -164,25 +164,25 @@ function SearchBox() {
 
 function SearchInputs({ options, ingredients, selected, selectedIngredients, inputRef1, inputRef2, inputRef3, ingrRef, handleCategoryChange, handleIngredientChange, removeCategory, removeIngredient, amountFilterRef }) {
     return (
-        <div class="bg-blue-500">
+        <div>
             <h1 class="text-red-500 text-5xl font-medium text-center" style={{ fontFamily: 'Patrick Hand, cursive' }}>Find out what you can make!</h1>
             <h3 class="text-xl overline text-center pb-4" style={{ fontFamily: 'Patrick Hand, cursive' }}>Choose ingredients you have and its amount and show recepies you can make now!</h3>
-            <div class="max-w-xl mx-auto p-6 bg-white/20 rounded-2xl shadow-md space-y-6">
-                <div class="shadow rounded p-2">
+            <div class="flex inline-flex min-h-screen max-w-xl p-6 bg-white/20 backdrop-blur-sm rounded-2xl shadow-md">
+                <div>
                     <label htmlFor="searchCat">Choose a category:</label><br></br>
-                    <input class="rounded text-white border border-lime-500 border-2 m-2" list="searchCat-categories-time" id="searchCat-time" name="searchCat-time" ref={inputRef1} placeholder={`Vreme spremanja`}/>
+                    <input class="rounded text-white border border-lime-500 border-2 m-2" list="searchCat-categories-time" id="searchCat-time" name="searchCat-time" ref={inputRef1} placeholder={`Vreme spremanja`}/><br></br>
                     <datalist id="searchCat-categories-time">
                         {options.time.length > 0 ? options.time.map(ctg => (
                             <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
                         )) : (<option>none</option>)}
                     </datalist>
-                    <input class="rounded text-white border border-lime-500 border-2 m-2" list="searchCat-categories-portions" id="searchCat-portions" name="searchCat-portions" ref={inputRef2} placeholder={`Broj porcija`}/>
+                    <input class="rounded text-white border border-lime-500 border-2 m-2" list="searchCat-categories-portions" id="searchCat-portions" name="searchCat-portions" ref={inputRef2} placeholder={`Broj porcija`}/><br></br>
                     <datalist id="searchCat-categories-portions">
                         {options.portions.length > 0 ? options.portions.map(ctg => (
                             <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
                         )) : (<option>none</option>)}
                     </datalist>
-                    <input class="rounded text-white border border-lime-500 border-2 m-2" list="searchCat-categories-types" id="searchCat-types" name="searchCat-types" ref={inputRef3} placeholder={`Tipovi`}/>
+                    <input class="rounded text-white border border-lime-500 border-2 m-2" list="searchCat-categories-types" id="searchCat-types" name="searchCat-types" ref={inputRef3} placeholder={`Tipovi`}/><br></br>
                     <datalist id="searchCat-categories-types">
                         {options.types.length > 0 ? options.types.map(ctg => (
                             <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
@@ -195,17 +195,15 @@ function SearchInputs({ options, ingredients, selected, selectedIngredients, inp
                             {e.name} <span onClick={() => removeCategory(e.id)}>❌</span>
                         </button>
                     ))}
-                </div>
-                <div class="shadow rounded p-2">
-                    <label htmlFor="searchIng">Choose an ingredient:</label>
+                    <label htmlFor="searchIng">Choose an ingredient:</label><br></br>
                     <div>
-                        <input class="rounded text-white border border-lime-500 border-2 m-2" list="searchIng-ingredients" id="searchIng" name="searchIng" ref={ingrRef} placeholder={`Sastojak`}/>
+                        <input class="rounded text-white border border-lime-500 border-2 m-2" list="searchIng-ingredients" id="searchIng" name="searchIng" ref={ingrRef} placeholder={`Sastojak`}/><br></br>
                         <datalist id="searchIng-ingredients">
                             {ingredients.length > 0 ? ingredients.map(ing => (
                                 <option key={ing.id} value={ing.name}>{ing.name}({ing.unitOfMeassure})</option>
                             )) : (<option>none</option>)}
                         </datalist>
-                        <input class="rounded text-white border border-lime-500 border-2 m-2" id="ing-amount-you-have" placeholder={`Kolicina`} ref={amountFilterRef}/>
+                        <input class="rounded text-white border border-lime-500 border-2 m-2" id="ing-amount-you-have" placeholder={`Kolicina`} ref={amountFilterRef}/><br></br>
                     </div>
                     <button class="bg-lime-500 px-2 rounded text-lime-100 m-2" onClick={(e) => handleIngredientChange(e, null)}>Confirm</button>
 
@@ -223,9 +221,9 @@ function SearchInputs({ options, ingredients, selected, selectedIngredients, inp
 function RecipeList({ recipes, options, ingredients, selected, selectedIngredients, handleCategoryChange, handleIngredientChange, removeCategory, removeIngredient}) {
     console.log(recipes);
     return (
-        <div class="flex justify-stretch p-4 rounded max-w-9/10 flex-wrap bg-blue-500">
+        <div class="flex justify-stretch p-4 rounded max-w-9/10 flex-wrap">
             {recipes.map(item => (
-                <div class="shadow m-1 p-1 rounded grow max-w-xs bg-white">
+                <div class="shadow m-1 p-2 rounded-2xl grow max-w-xs bg-white">
                     <div key={item.id}>
                         <h1 class="font-bold text-xl mb-2">{item.title}</h1>
                         <h3 class="line-clamp-2 max-w-xs">{item.instructions}</h3>
@@ -473,7 +471,7 @@ function AddRecipe({ options, ingredients, selected, selectedIngredients, fetchI
 // Render it!
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <div>
+    <div className="min-h-screen bg-[url('/images/background/bg.jpg')] bg-cover bg-center">
         <SearchBox />
     </div>
 );
