@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "q0hsyI+WtCB4tGXpCeKVMl9r/CvkwSG018DrwzYajrY=",
+  "Hash": "BXK4z3R9cgO64stHuKZg5I7GjlF2Dugw0P0kpgRgUVc=",
   "Source": "Kuhinja",
   "BasePath": "_content/Kuhinja",
   "Mode": "Default",
@@ -17,12 +17,12 @@
   ],
   "Assets": [
     {
-      "Identity": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\images\\240181-Grandmas-Carrot-Salad-4x3-238-c860efd1e71d4dd6892854f777976abb.webp",
+      "Identity": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\images\\240181-Grandmas-Carrot-Salad-4x3-238-c860efd1e71d4dd6892854f777976abb.webp.webp",
       "SourceId": "Kuhinja",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\",
       "BasePath": "_content/Kuhinja",
-      "RelativePath": "images/240181-Grandmas-Carrot-Salad-4x3-238-c860efd1e71d4dd6892854f777976abb.webp",
+      "RelativePath": "images/240181-Grandmas-Carrot-Salad-4x3-238-c860efd1e71d4dd6892854f777976abb.webp.webp",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -31,7 +31,24 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\images\\240181-Grandmas-Carrot-Salad-4x3-238-c860efd1e71d4dd6892854f777976abb.webp"
+      "OriginalItemSpec": "wwwroot\\images\\240181-Grandmas-Carrot-Salad-4x3-238-c860efd1e71d4dd6892854f777976abb.webp.webp"
+    },
+    {
+      "Identity": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\images\\background\\bg.jpg",
+      "SourceId": "Kuhinja",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\",
+      "BasePath": "_content/Kuhinja",
+      "RelativePath": "images/background/bg.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\background\\bg.jpg"
     },
     {
       "Identity": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\images\\images.jfif",
