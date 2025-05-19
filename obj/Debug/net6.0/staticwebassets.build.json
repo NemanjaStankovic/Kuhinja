@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "BXK4z3R9cgO64stHuKZg5I7GjlF2Dugw0P0kpgRgUVc=",
+  "Hash": "kDAI9nJpqLJz4GnGkPGQrhz2E3EtrZGPI+dm4BLDQf0=",
   "Source": "Kuhinja",
   "BasePath": "_content/Kuhinja",
   "Mode": "Default",
@@ -17,12 +17,12 @@
   ],
   "Assets": [
     {
-      "Identity": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\images\\240181-Grandmas-Carrot-Salad-4x3-238-c860efd1e71d4dd6892854f777976abb.webp.webp",
+      "Identity": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\images\\4.webp",
       "SourceId": "Kuhinja",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\",
       "BasePath": "_content/Kuhinja",
-      "RelativePath": "images/240181-Grandmas-Carrot-Salad-4x3-238-c860efd1e71d4dd6892854f777976abb.webp.webp",
+      "RelativePath": "images/4.webp",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -31,7 +31,7 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\images\\240181-Grandmas-Carrot-Salad-4x3-238-c860efd1e71d4dd6892854f777976abb.webp.webp"
+      "OriginalItemSpec": "wwwroot\\images\\4.webp"
     },
     {
       "Identity": "C:\\Users\\neman\\source\\repos\\Kuhinja\\wwwroot\\images\\background\\bg.jpg",
