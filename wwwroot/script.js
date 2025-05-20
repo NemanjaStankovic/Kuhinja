@@ -10,6 +10,7 @@ function SearchBox() {
     const [selected, setSelected] = useState([]);
     const [selectedIngredients, setSelectedIngredients] = useState([]);
     const [recipes, setRecipes] = useState([]);
+    const [recipeToShow, setRecipeToShow] = useState([]);
     const inputRef1 = useRef(null);
     const inputRef2 = useRef(null);
     const inputRef3 = useRef(null);
@@ -149,19 +150,13 @@ function SearchBox() {
                 removeCategory={removeCategory}
                 removeIngredient={removeIngredient}
                 amountFilterRef={amountFilterRef}
+                fetchIngredients={fetchIngredients}
             />
-            <AddRecipe 
-                recipes={recipes}
-                options={options}
-                ingredients={ingredients}
-                selected={selected}
-                selectedIngredients={selectedIngredients}
-                fetchIngredients = {fetchIngredients} />
         </div>
     );
 }
 
-function SearchInputs({ recipes, options, ingredients, selected, selectedIngredients, inputRef1, inputRef2, inputRef3, ingrRef, handleCategoryChange, handleIngredientChange, removeCategory, removeIngredient, amountFilterRef }) {
+function SearchInputs({ recipes, options, ingredients, selected, selectedIngredients, inputRef1, inputRef2, inputRef3, ingrRef, handleCategoryChange, handleIngredientChange, removeCategory, removeIngredient, amountFilterRef, fetchIngredients }) {
     return (
         <div>
             <h1 class="text-blue-500 text-5xl font-medium text-center" style={{ fontFamily: 'Patrick Hand, cursive' }}>Find out what you can make!</h1>
@@ -169,6 +164,7 @@ function SearchInputs({ recipes, options, ingredients, selected, selectedIngredi
             <div class="flex">
                 <div class="flex inline-flex min-h-screen max-w-xl p-6 bg-white/20 backdrop-blur-sm rounded-2xl shadow-md">
                     <div>
+                        <h1 style={{ fontFamily: 'Patrick Hand, cursive' }} class="text-blue-500 text-3xl">Filter</h1>
                         <label htmlFor="searchCat">Choose a category:</label><br></br>
                         <input class="rounded text-blue-500 border border-blue-500 border-2 m-2" list="searchCat-categories-time" id="searchCat-time" name="searchCat-time" ref={inputRef1} placeholder={`Vreme spremanja`}/><br></br>
                         <datalist id="searchCat-categories-time">
@@ -205,7 +201,7 @@ function SearchInputs({ recipes, options, ingredients, selected, selectedIngredi
                          selected!=null && selected.length!=0?<div><label>Category filters:</label><br></br></div>:null}
                          {selected.map(e => (
                             <div>
-                                <button class="border border-blue-500 rounded-2xl p-1" key={e.id}>
+                                <button class="border text-blue-500 border-blue-500 rounded-2xl p-1" key={e.id}>
                                     {e.name} <span onClick={() => removeCategory(e.id)}>❌</span>
                                 </button><br></br>
                             </div>
@@ -214,7 +210,7 @@ function SearchInputs({ recipes, options, ingredients, selected, selectedIngredi
                          selectedIngredients!=null && selectedIngredients.length!=0?<div><br></br><label>Ingredients filters:</label><br></br></div>:null}
                         {selectedIngredients.map(e => (
                             <div>
-                                <button class="border border-blue-500 rounded-2xl p-1" key={e.id}>
+                                <button class="border text-blue-500 border-blue-500 rounded-2xl p-1" key={e.id}>
                                     {e.name} ({e.amount} {e.unitOfMeassure}) <span onClick={() => removeIngredient(e.id)}>❌</span>
                                 </button><br></br>
                             </div>
@@ -231,17 +227,40 @@ function SearchInputs({ recipes, options, ingredients, selected, selectedIngredi
                 handleIngredientChange={handleIngredientChange}
                 removeCategory={removeCategory}
                 removeIngredient={removeIngredient} />
+                
+                <SelectedRecipe
+                recipes={recipes}
+                options={options}
+                ingredients={ingredients}
+                selected={selected}
+                selectedIngredients={selectedIngredients}
+                fetchIngredients = {fetchIngredients}
+                />
+
             </div>
+            <AddRecipe 
+            recipes={recipes}
+            options={options}
+            ingredients={ingredients}
+            selected={selected}
+            selectedIngredients={selectedIngredients}
+            fetchIngredients = {fetchIngredients} />
         </div>
     );
 }
 
+function SelectedRecipe({ options, ingredients, selected, selectedIngredients, fetchIngredients }){
+    return (
+        <div class="flex inline-flex max-w-9/10 p-6 bg-white/20 backdrop-blur-sm rounded-2xl shadow-md">
+            
+        </div>);
+}
+
 function RecipeList({ recipes, options, ingredients, selected, selectedIngredients, handleCategoryChange, handleIngredientChange, removeCategory, removeIngredient}) {
-    console.log(recipes);
     return (
         <div class="flex items-start p-4 grow rounded flex-wrap overflow-visible">
             {recipes.map(item => (
-                <div class="relative group">
+                <div onClick={()=> alert('Div clicked!')} class="relative group cursor-pointer">
                     <div class="shadow m-1 p-2 rounded-2xl grow flex max-w-xs overflow-hidden transition-all duration-300 max-h-[400px] group-hover:max-h-[1000px] bg-white">
                         <div key={item.id}>
                             <h1 class="font-bold text-xl mb-2">{item.title}</h1>
@@ -415,34 +434,29 @@ function AddRecipe({ options, ingredients, selected, selectedIngredients, fetchI
     }
     return(
         <div class="flex inline-flex max-w-9/10 p-6 bg-white/20 backdrop-blur-sm rounded-2xl shadow-md">
-            <h1>AddRecipe</h1>
+            <h1 style={{ fontFamily: 'Patrick Hand, cursive' }} class="text-blue-500 text-3xl px-6">Add Recipe</h1>
             <form id="addrecipe" encType="multipart/form-data" onSubmit={handleSubmit}>
-                <label htmlFor="title">Title:</label>
-                <input type="text" id="title" name="title" ref={addRecTitleRef} required></input><br></br>
+                <input class="rounded text-blue-500 border border-blue-500 border-2 m-2" type="text" id="title" name="title" ref={addRecTitleRef} required placeholder="Title"></input><br></br>
 
-                <label htmlFor="instructions">Instructions:</label><br></br>
-                <textarea id="instructions" name="instructions" rows="5" cols="40" ref={addRecInstRef} required></textarea><br></br>
+                <textarea class="rounded text-blue-500 border border-blue-500 border-2 m-2" id="instructions" name="instructions" rows="5" cols="40" ref={addRecInstRef} required placeholder="Instructions"></textarea><br></br>
 
                 <label htmlFor="image">Upload Image:</label>
                 <input class="rounded-5xl text-blue-500 border border-blue-500 border-2 m-2" type="file" id="image" name="image" accept="image/*" ref={addRecImgRef} required></input><br></br>
 
                 <label htmlFor="searchCat">Choose a category:</label>
-                <label htmlFor="searchCat-time">Vreme spremanja:</label>
-                <input class="rounded text-blue-500 border border-blue-500 border-2 m-2" list="searchCat-categories-time" id="searchCat-time" name="searchCat-time" ref={inputRef1}/>
+                <input class="rounded text-blue-500 border border-blue-500 border-2 m-2" list="searchCat-categories-time" id="searchCat-time" name="searchCat-time" ref={inputRef1} placeholder={`Vreme spremanja`}/>
                 <datalist id="searchCat-categories-time">
                     {options.time.length > 0 ? options.time.map(ctg => (
                         <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
                     )) : (<option>none</option>)}
                 </datalist>
-                <label htmlFor="searchCat-portions">Broj porcija:</label>
-                <input class="rounded text-blue-500 border border-blue-500 border-2 m-2" list="searchCat-categories-portions" id="searchCat-portions" name="searchCat-portions" ref={inputRef2}/>
+                <input class="rounded text-blue-500 border border-blue-500 border-2 m-2" list="searchCat-categories-portions" id="searchCat-portions" name="searchCat-portions" ref={inputRef2} placeholder={`Broj porcija`}/>
                 <datalist id="searchCat-categories-portions">
                     {options.portions.length > 0 ? options.portions.map(ctg => (
                         <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
                     )) : (<option>none</option>)}
                 </datalist>
-                <label htmlFor="searchCat-types">Tipovi:</label>
-                <input class="rounded text-blue-500 border border-blue-500 border-2 m-2" list="searchCat-categories-types" id="searchCat-types" name="searchCat-types" ref={inputRef3}/>
+                <input class="rounded text-blue-500 border border-blue-500 border-2 m-2" list="searchCat-categories-types" id="searchCat-types" name="searchCat-types" ref={inputRef3} placeholder={`Tipovi`}/>
                 <datalist id="searchCat-categories-types">
                     {options.types.length > 0 ? options.types.map(ctg => (
                         <option key={ctg.id} value={ctg.name}>{ctg.name}</option>
@@ -451,20 +465,20 @@ function AddRecipe({ options, ingredients, selected, selectedIngredients, fetchI
                 <button class="bg-blue-500 px-2 rounded text-white m-2" type="button" onClick={(e) => handleCategoryChange(e)}>Confirm</button><br></br>
 
                 {addRecCat.map(e => (
-                    <button key={e.id}>
+                    <button class="border text-blue-500 border-blue-500 rounded-2xl p-1" key={e.id}>
                         {e.name} <span onClick={() => removeCategory(e.id)}>❌</span>
                     </button>
                 ))}
                 <br></br>
                 <label htmlFor="addRecIng">Add Recipe Ingredient:</label>
-                <input class="rounded text-blue-500 border border-blue-500 border-2 m-2" list="addRec-ingredients" id="addRecIng" name="addRecIng" ref={addRecIngRef}/>
+                <input class="rounded text-blue-500 border border-blue-500 border-2 m-2" list="addRec-ingredients" id="addRecIng" name="addRecIng" placeholder={`Ingredient`} ref={addRecIngRef}/>
                 <datalist id="addRec-ingredients">
                     {ingredients.length > 0 ? ingredients.map(ing => (
                         <option key={ing.id} value={ing.name}>{ing.name}({ing.unitOfMeassure})</option>
                     )) : (<option>none</option>)}
                 </datalist>
                 <input class="rounded text-blue-500 border border-blue-500 border-2 m-2" id="addRec-ingredients-amount" placeholder={`Amount`} ref={addRecIngAmountRef}/>
-                <button type="button" onClick={(e) => handleIngredientChange(e, null)}>Confirm</button><br></br>
+                <button class="bg-blue-500 px-2 rounded text-white m-2" type="button" onClick={(e) => handleIngredientChange(e, null)}>Confirm</button><br></br>
 
                 <label>Ingredient doesnt exist? Add it!</label>
                 <input class="rounded text-blue-500 border border-blue-500 border-2 m-2" ref={newIng} placeholder="ingredient name"></input>
@@ -477,7 +491,7 @@ function AddRecipe({ options, ingredients, selected, selectedIngredients, fetchI
                 <button class="bg-blue-500 px-2 rounded text-white m-2" type="button" onClick={(e)=> addNewIngredient(e)}>ADD</button><br></br>
 
                 {addRecIng.map(e => (
-                    <button key={e.id}>
+                    <button class="border text-blue-500 border-blue-500 rounded-2xl p-1" key={e.id}>
                         {e.name} ({e.amount} {e.unitOfMeassure})<span onClick={() => removeIngredient(e.id)}>❌</span>
                     </button>
                 ))}
