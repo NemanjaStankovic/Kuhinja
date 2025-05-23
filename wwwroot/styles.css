@@ -1,5 +1,8 @@
-.recipe-img {
-  max-width: 300px;
-  max-height: 200px;
-  object-fit: cover;
+.custom-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
 }
